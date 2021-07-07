@@ -9,10 +9,9 @@
 	integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
 	crossorigin="anonymous">
 	<link rel="stylesheet" th:href="@{/css/styles.css}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-	<p th:text="'Hello, ' + ${name} + '!'" />
-
 	<section class="myform-area">
 		<div class="container">
 			<div class="row justify-content-center">
@@ -20,13 +19,13 @@
 					<div class="form-area login-form">
 						<div class="form-content">
 							<h2>Inicio de sesión</h2>
-							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-								Nulla non aperiam cum quas quod reprehenderit.</p>
+							<p>Ecommerce para productos podológicos.</p>
+							<img th:src="@{/img/foot.png}" style="margin-left:32% ;width: 30%" alt="embedded folder icon">
 							<ul>
-								<li><a href="#" class="facebook"><i
-										class="fa fa-facebook-f"></i><span>facebook</span></a></li>
-								<li><a href="#" class="twitter"><i
-										class="fa fa-twitter"></i><span>twitter</span></a></li>
+								<li><a href="#" class="facebook"><img
+									th:src="@{/img/facebook.png}" height="35" /><span> facebook</span></a></li>
+								<li><a href="#" class="twitter"><img 
+									th:src="@{/img/twitter.png}" height="35" /><span> twitter</span></a></li>
 							</ul>
 						</div>
 						<div class="form-input">

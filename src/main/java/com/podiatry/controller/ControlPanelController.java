@@ -30,7 +30,7 @@ public class ControlPanelController {
 		return "controlPanel";
 	}
 	
-	@GetMapping("/destroySession")
+	@GetMapping("/logout")
 	public String destroySession(Model model, HttpSession session) {
 		session.invalidate();
 		return "index";

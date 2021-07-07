@@ -21,7 +21,7 @@
 }
 </style>
 <link rel="shortcut icon" type="image/x-icon"
-	th:href="@{/img/logos/squanchy.jpg}">
+	th:href="@{/img/foot_header.png}">
 <link rel="apple-touch-icon" sizes="180x180"
 	th:href="@{/img/logos/squanchy.jpg}">
 <link rel="icon" type="image/png" sizes="32x32"
@@ -45,7 +45,7 @@
 			<div class="row align-items-center">
 				<div class="col-lg-3">
 					<div class="brand-wrap">
-						<img class="logo" th:src="@{/img/logos/squanchy.jpg}">
+						<img class="logo" th:src="@{/img/foot_header.png}">
 						<h2 class="logo-text">Bienvenido a Podiatry</h2>
 					</div>
 					<!-- brand-wrap.// -->
@@ -53,7 +53,7 @@
 				<div class="col-lg-6 col-sm-6">
 					<form action="#" class="search-wrap">
 						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search" onkeyup="itemTyped(this)">
+							<input type="text" class="form-control" placeholder="Buscar" onkeyup="itemTyped(this)">
 							<div class="input-group-append">
 								<button class="btn btn-primary" type="submit">
 									<img th:src="@{/img/search.png}" height="25" />
@@ -81,8 +81,11 @@
 								th:text="  ${session.user}">
 							</a> <span style="color: blue;"> </span>
 							<div class="dropdown-menu dropdown-menu-right">
-								<a class="dropdown-item" href="#"><i
-									class="fa fa-sign-out-alt"></i> Logout</a>
+							<form th:action="@{/logout}" method="GET">
+							<button type="submit" class="dropdown-item"><i
+									class="fa fa-sign-out-alt"></i> Cerrar sesión</button>
+							</form>
+								
 							</div>
 							<!--  dropdown-menu .// -->
 						</div>
@@ -104,9 +107,9 @@
 					<ul class="nav bg radius nav-pills nav-fill mb-3 bg" role="tablist">
 						<li class="nav-item"><a class="nav-link active show"
 							data-toggle="pill" href="#nav-tab-card"> <i
-								class="fa fa-tags"></i> All
+								class="fa fa-tags"></i> Todos
 						</a></li>
-						<li class="nav-item"><a class="nav-link" data-toggle="pill"
+						<!-- li class="nav-item"><a class="nav-link" data-toggle="pill"
 							href="#nav-tab-paypal"> <i class="fa fa-tags "></i> Category
 								1
 						</a></li>
@@ -121,14 +124,14 @@
 						</a></li>
 						<li class="nav-item"><a class="nav-link" data-toggle="pill"
 							href="#nav-tab-bank"> <i class="fa fa-tags "></i> Category 5
-						</a></li>
+						</a></li-->
 					</ul>
 					<span id="items">
 						<div class="row" id="row-item">
 							<th:block th:each="product : ${allProducts}">
 								<div class="col-md-3">
 									<figure class="card card-product">
-										<span class="badge-new"> NEW </span>
+										<span class="badge-new"> NUEVO </span>
 										<div class="img-wrap">
 											<img th:id="img+${product.id_product}"
 												th:src="@{'data:image/jpeg;base64,'+${product.img}}">
@@ -141,7 +144,7 @@
 											<div class="action-wrap">
 												<a href="#" class="btn btn-primary btn-sm float-right"
 													th:id="${product.id_product}" onclick="addCar(this)"> <img
-													th:src="@{/img/car_of_sales.png}" height="15" /> Add
+													th:src="@{/img/car_of_sales.png}" height="15" /> Agregar
 													<span th:text="'('+${product.total+')'}"></span>
 												</a>
 												<div class="price-wrap h5">$<span class="price-new" th:id="price+${product.id_product}"
@@ -178,27 +181,27 @@
 					<!-- card.// -->
 					<div class="box">
 						<dl class="dlist-align">
-							<dt>Tax:</dt>
+							<dt>Impuesto:</dt>
 							<dd class="text-right">12%</dd>
 						</dl>
 						<dl class="dlist-align">
-							<dt>Discount:</dt>
+							<dt>Descuento:</dt>
 							<dd class="text-right">
 								<a href="#">0%</a>
 							</dd>
 						</dl>
 						<dl class="dlist-align">
 							<dt>Sub Total:</dt>
-							<dd class="text-right" id="subtotal">$215</dd>
+							<dd class="text-right" id="subtotal">$0</dd>
 						</dl>
 						<dl class="dlist-align">
 							<dt>Total:</dt>
-							<dd class="text-right h4 b" id="total">$215</dd>
+							<dd class="text-right h4 b" id="total">$0</dd>
 						</dl>
 						<div class="row">
 							<div class="col-md-6" id="cancelSell" onclick="deleteSells()">
 								<a href="#" class="btn  btn-default btn-error btn-lg btn-block"><img
-									th:src="@{/img/cancel.png}" height="35" /> Cancel </a>
+									th:src="@{/img/cancel.png}" height="35" /> Cancelar </a>
 							</div>
 							<div class="col-md-6">
 								<!-- form method="post" th:action="@{/buyItem}">
@@ -208,7 +211,7 @@
 								</form-->
 
 								<a href="#" class="btn  btn-primary btn-lg btn-block" onclick="buyItem()"><img
-									th:src="@{/img/buy.png}" height="35" /> Charge </a>
+									th:src="@{/img/buy.png}" height="35" /> Pagar </a>
 							</div>
 						</div>
 					</div>
@@ -218,7 +221,6 @@
 		</div>
 		<!-- container //  -->
 	</section>
-	<!-- ========================= SECTION CONTENT END// ========================= -->
 	<script th:src="@{/js/jquery-2.0.0.min.js}" type="text/javascript"></script>
 	<script th:src="@{/js/bootstrap.bundle.min.js}" type="text/javascript"></script>
 	<script th:src="@{js/OverlayScrollbars.js}" type="text/javascript"></script>
@@ -364,8 +366,6 @@
 			});
 			let result = await response;
 			if(result.status == 200){
-				/*swal("Compra con éxito!", "Presiona ok para seguir comprando", "success");
-				deleteSells();*/
 				swal({
 				  title: "Compra con éxito!",
 				  text: "Presiona ok para seguir comprando",
@@ -381,17 +381,12 @@
 		}
 		function itemTyped(e) {
 			var port= window.location.port;
-			
-			/*let response = await fetch('http://localhost:'+port+'/getProduct?name='+e.value)
-			console.log(response)*/
-			
 			let xhr = new XMLHttpRequest();
 
 			xhr.open('GET', 'http://localhost:'+port+'/getProduct?name='+e.value);
 			xhr.send();
 			xhr.onload = function() {
 			  let responseObj = xhr.responseText;
-			  //console.log(JSON.parse(responseObj)); // Hello, world!
 			  filterItem(JSON.parse(responseObj))
 			};
 		}
@@ -403,10 +398,7 @@
 				console.log(products[key].id_product)
 				console.log(products[key].name)
 				//console.log(products[key].img)
-				row_item.innerHTML+="<div class='col-md-3'><figure class='card card-product'><span class='badge-new'> NEW </span><div class='img-wrap'><img src='data:image/jpeg;base64,"+products[key].img+"'  id='img"+products[key].id_product+"'><a class='btn-overlay' href='#'><i class='fa fa-search-plus'></i> Vista rápida</a></div><figcaption class='info-wrap'><a href='#' class='title' id='name"+products[key].name+"'>hola</a><div class='action-wrap'><a href='#' class='btn btn-primary btn-sm float-right' id='"+products[key].id_product+"' onclick='addCar(this)'> <img src='/img/car_of_sales.png' height='15' /> Add <span text=''('"+products[key].total+"')'}'></span> </a> <div class='price-wrap h5'>$<span class='price-new' id='price"+products[key].id_product+"' text='"+products[key].price+"'></span></div></div></figcaption></figure></div>"	
-				
-				//console.log("<div class='col-md-3'><figure class='card card-product'><span class='badge-new'> NEW </span><div class='img-wrap'><img src='data:image/jpeg;base64,"+products[key].img+"'  id='img"+products[key].id_product+"'><a class='btn-overlay' href='#'><i class='fa fa-search-plus'></i> Vista rápida</a></div><figcaption class='info-wrap'><a href='#' class='title' id='name"+products[key].name+"' text='"+products[key].name+"'></a><div class='action-wrap'><a href='#' class='btn btn-primary btn-sm float-right' id='"+products[key].id_product+"' onclick='addCar(this)'> <img src='/img/car_of_sales.png' height='15' /> Add <span text=''('"+products[key].total+"')'}'></span> </a> <div class='price-wrap h5'>$<span class='price-new' id='price"+products[key].id_product+"' text='"+products[key].price+"'></span></div></div></figcaption></figure></div>");
-				console.log("<div class='col-md-3'><figure class='card card-product'><span class='badge-new'> NEW </span><div class='img-wrap'><img src='data:image/jpeg;base64,"+products[key].img+"'  id='img"+products[key].id_product+"'><a class='btn-overlay' href='#'><i class='fa fa-search-plus'></i> Vista rápida</a></div><figcaption class='info-wrap'><a href='#' class='title' id='name"+products[key].name+"'>"+products[key].name+"</a><div class='action-wrap'><a href='#' class='btn btn-primary btn-sm float-right' id='"+products[key].id_product+"' onclick='addCar(this)'> <img src='/img/car_of_sales.png' height='15' /> Add <span text=''('"+products[key].total+"')'}'></span> </a> <div class='price-wrap h5'>$<span class='price-new' id='price"+products[key].id_product+"' text='"+products[key].price+"'></span></div></div></figcaption></figure></div>");
+				row_item.innerHTML+="<div class='col-md-3'><figure class='card card-product'><span class='badge-new'> Nuevo </span><div class='img-wrap'><img src='data:image/jpeg;base64,"+products[key].img+"'  id='img"+products[key].id_product+"'><a class='btn-overlay' href='#'><i class='fa fa-search-plus'></i> Vista rápida</a></div><figcaption class='info-wrap'><a href='#' class='title' id='name"+products[key].name+"'> "+products[key].name+"</a><div class='action-wrap'><a href='#' class='btn btn-primary btn-sm float-right' id='"+products[key].id_product+"' onclick='addCar(this)'> <img src='/img/car_of_sales.png' height='15' /> Add <span> ("+products[key].total+")</span> </a> <div class='price-wrap h5'>$<span class='price-new' id='price"+products[key].id_product+"'> "+products[key].price+" </span></div></div></figcaption></figure></div>"	
 			}
 			
 			
