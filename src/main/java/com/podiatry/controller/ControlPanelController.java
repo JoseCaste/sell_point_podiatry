@@ -25,6 +25,9 @@ public class ControlPanelController {
 	@GetMapping("/session")
 	public String currentSession(Model model) {
 		//saveProduct();
+		if(model.getAttribute("user")==null)
+			return "redirect:/index";
+		
 		List<Product> all_products= repository.allProducts();
 		model.addAttribute("allProducts", all_products);
 		return "controlPanel";
@@ -41,7 +44,7 @@ public class ControlPanelController {
 		String [] names = {"Pinza","Crema verde","Aceite","Plantilla","Soporte","Kit","Exfoliante"};
 		int [] price = {125,500,250,70,1500,180,96}; 
 		List<Product> products= new ArrayList<>();
-		for (int i=1;i<=7;i++) {
+		for (int i=0;i<7;i++) {
 			try {
 				String url=String.format("/com/podiatry/stuff/%d.jpg",i);
 				String type="jpg";
@@ -63,6 +66,6 @@ public class ControlPanelController {
 			
 		}
 		repository.saveAll(products);
-		return "Total de productos "+repository.allProducts().size();
+		return "index";
 	}
 }
