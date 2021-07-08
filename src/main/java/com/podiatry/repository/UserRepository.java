@@ -9,7 +9,7 @@ import com.podiatry.model.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>{
 
-	@Query(value="SELECT * FROM user WHERE name like ?1 and password like ?2", nativeQuery = true) 
+	@Query(value="SELECT * FROM user WHERE user_name like ?1 and password like ?2", nativeQuery = true) 
 	User getUser(String user, String password);
 } 
  
