@@ -35,11 +35,11 @@ public class IndexController {
 
 	@PostMapping("/session")
 	public String session(@ModelAttribute(name = "user") User user, Model model, HttpSession session) {
-		// System.out.println(user.getUserName());
 		user= repository.getUser(user.getUserName(), md5(user.getPassword()));
 		if ( user!= null) {
 			List<Product> all_products= productRepository.allProducts();
 			session.setAttribute("user", user.getName());
+			session.setAttribute("id", user.getId());
 			model.addAttribute("allProducts", all_products);
 			return "controlPanel";
 		}else {
@@ -48,13 +48,6 @@ public class IndexController {
 		}
 		
 	}
-	/*@GetMapping("/session2")
-	public String session2(Model model) {
-		// System.out.println(user.getUserName());
-		
-			return "controlPanel";
-
-	}*/
 	public String md5(String password) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");

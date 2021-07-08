@@ -30,7 +30,7 @@ public class Purchase {
 	@JoinColumn(name="fk_iduser",nullable = false, updatable = false)
 	private User user;
 	
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date date_;
 	
 	@JoinTable(
