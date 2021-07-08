@@ -38,8 +38,6 @@
 </head>
 
 <body>
-
-
 	<section class="header-main">
 		<div class="container">
 			<div class="row align-items-center">
@@ -76,9 +74,11 @@
 						<!-- widget .// -->
 						<div class="widget-header dropdown">
 							<a href="#" class="ml-3 icontext" data-toggle="dropdown"
-								data-offset="20,10"> <img
+								data-offset="20,10"> <img th:if="${!session.isEmpty()}"
 								th:src="@{/img/avatars/bshbsh.png}" class="avatar" alt=""
 								th:text="  ${session.user}">
+								<img th:if="${session.isEmpty()}"
+								th:src="@{/img/user.png}" class="avatar" alt="">
 							</a> <span style="color: blue;"> </span>
 							<div class="dropdown-menu dropdown-menu-right">
 							<form th:action="@{/logout}" method="GET">
@@ -142,11 +142,11 @@
 											<a href="#" class="title" th:id="name+${product.id_product}"
 												th:text="${product.name}"></a>
 											<div class="action-wrap">
-												<a href="#" class="btn btn-primary btn-sm float-right"
+												<button th:disabled="${session.isEmpty()}"	class="btn btn-primary btn-sm float-right" 
 													th:id="${product.id_product}" onclick="addCar(this)"> <img
 													th:src="@{/img/car_of_sales.png}" height="15" /> Agregar
 													<span th:text="'('+${product.total+')'}"></span>
-												</a>
+												</button>
 												<div class="price-wrap h5">$<span class="price-new" th:id="price+${product.id_product}"
 														th:text="${product.price}"></span>
 												</div>
@@ -182,7 +182,7 @@
 					<div class="box">
 						<dl class="dlist-align">
 							<dt>Impuesto:</dt>
-							<dd class="text-right">12%</dd>
+							<dd class="text-right">16%</dd>
 						</dl>
 						<dl class="dlist-align">
 							<dt>Descuento:</dt>
@@ -210,8 +210,8 @@
 									</button>
 								</form-->
 
-								<a href="#" class="btn  btn-primary btn-lg btn-block" onclick="buyItem()"><img
-									th:src="@{/img/buy.png}" height="35" /> Pagar </a>
+								<button th:disabled="${session.isEmpty()}"  class="btn  btn-primary btn-lg btn-block" onclick="buyItem()"><img
+									th:src="@{/img/buy.png}" height="35" /> Pagar </button>
 							</div>
 						</div>
 					</div>
@@ -363,6 +363,7 @@
 		async function buyItem(){
 			
 			var products= JSON.parse(localStorage.getItem("products"))
+			if(products!=null && Object.keys( JSON.parse(localStorage.getItem("products"))).length>0){
 			console.log(products)
 			var port= window.location.port;
 			
@@ -386,6 +387,9 @@
 				});
 			}else 
 			swal("Oops!", "Algo ocurrió en el proceso!", "error");
+			}else swal("Lo sentimos", "Debes tener productos para poder pagar!", "error");
+			
+			
 			
 		}
 		function itemTyped(e) {
@@ -404,9 +408,6 @@
 			var row_item=document.querySelector("#row-item");
 			row_item.innerHTML="";
 			for (var key in products) {
-				console.log(products[key].id_product)
-				console.log(products[key].name)
-				//console.log(products[key].img)
 				row_item.innerHTML+="<div class='col-md-3'><figure class='card card-product'><span class='badge-new'> Nuevo </span><div class='img-wrap'><img src='data:image/jpeg;base64,"+products[key].img+"'  id='img"+products[key].id_product+"'><a class='btn-overlay' href='#'><i class='fa fa-search-plus'></i> Vista rápida</a></div><figcaption class='info-wrap'><a href='#' class='title' id='name"+products[key].name+"'> "+products[key].name+"</a><div class='action-wrap'><a href='#' class='btn btn-primary btn-sm float-right' id='"+products[key].id_product+"' onclick='addCar(this)'> <img src='/img/car_of_sales.png' height='15' /> Add <span> ("+products[key].total+")</span> </a> <div class='price-wrap h5'>$<span class='price-new' id='price"+products[key].id_product+"'> "+products[key].price+" </span></div></div></figcaption></figure></div>"	
 			}
 			

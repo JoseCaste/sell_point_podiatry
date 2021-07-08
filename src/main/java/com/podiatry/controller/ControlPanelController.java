@@ -24,9 +24,6 @@ public class ControlPanelController {
 	
 	@GetMapping("/session")
 	public String currentSession(Model model) {
-		//saveProduct();
-		if(model.getAttribute("user")==null)
-			return "redirect:/index";
 		
 		List<Product> all_products= repository.allProducts();
 		model.addAttribute("allProducts", all_products);
@@ -52,8 +49,6 @@ public class ControlPanelController {
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 				ImageIO.write(img, type, bos);
 	            byte[] imageBytes = bos.toByteArray();
-	 
-	            //String base64bytes = Base64.encode(imageBytes);
 	            Base64.Encoder encoder = Base64.getEncoder();
 	            String encoded = encoder.encodeToString(imageBytes);
 	            System.out.println(new Product(""+i,i,i,encoded).toString());
