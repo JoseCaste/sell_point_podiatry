@@ -5,7 +5,7 @@ create table user (id mediumint auto_increment, name text, lastname text, user_n
 insert into user (name, lastname, user_name,password) value ('Jose', 'Castellanos','jose',md5('12345'));
 select * from user;
 
-create table purchase(id_purchase mediumint auto_increment, fk_iduser mediumint, date_ date, primary key(id_purchase),foreign key(fk_iduser)references user(id));
+create table purchase(id_purchase mediumint auto_increment, fk_iduser mediumint, date_ datetime, primary key(id_purchase),foreign key(fk_iduser)references user(id));
 
 create table contains_(fk_idpurchase mediumint,fk_idproduct mediumint, foreign key(fk_idpurchase)references purchase(id_purchase),
 foreign key(fk_idproduct)references product(id_product));

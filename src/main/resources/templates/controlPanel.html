@@ -241,11 +241,27 @@
 			var tbody = document.querySelector("#car_sales");
 			tbody.innerHTML = "";
 			for (var key in products) {
-				tbody.innerHTML += "<tr><td><figure class='media'><div class='img-wrap'><img src='" + products[key].src + "' class='img-thumbnail img-xs'></div><figcaption class='media-body'><h6 class='title text-truncate'>" + products[key].name + "</h6></figcaption></figure></td><td class='text-center'><div class='m-btn-group m-btn-group--pill btn-group mr-2' role='group' aria-label='...'> <button type='button' class='m-btn btn btn-default'> <img id='less' src='img/less.png' height='15' onclick='less(this)'/></i></button><button type='button' class='m-btn btn btn-default' >"+products[key].total+"</button><button type='button' class='m-btn btn btn-default'><img id='plus' src='img/plus.png' height='15' onclick='plus(this)'/></i></button></div></td><td><div class='price-wrap'><var class='price'>" + products[key].price + "</var></div> </td><td class='text-right'><a href='' class='btn btn-outline-danger'> <img src='img/trash.png' height='15'/></a></td> </tr>"
+				tbody.innerHTML += "<tr><td><figure class='media'><div class='img-wrap'><img src='" + products[key].src + "' class='img-thumbnail img-xs'></div><figcaption class='media-body'><h6 class='title text-truncate'>" + products[key].name + "</h6></figcaption></figure></td><td class='text-center'><div class='m-btn-group m-btn-group--pill btn-group mr-2' role='group' aria-label='...'> <button type='button' class='m-btn btn btn-default'> <img id='less' src='img/less.png' height='15' onclick='less(this)'/></i></button><button type='button' class='m-btn btn btn-default' >"+products[key].total+"</button><button type='button' class='m-btn btn btn-default'><img id='plus' src='img/plus.png' height='15' onclick='plus(this)'/></i></button></div></td><td><div class='price-wrap'><var class='price'>" + products[key].price + "</var></div> </td><td class='text-right'><div href='#' class='btn btn-outline-danger'> <img src='img/trash.png' height='15' onclick='deleteItem(this)' /></div></td> </tr>"
 				mount+=parseFloat(products[key].price)*products[key].total
 			}
 			subtotal.textContent="$"+mount
 			total.textContent="$"+mount
+		}
+		function deleteItem(e){
+		
+		var deleteItem_=e;
+		let name=e.parentNode.parentNode.parentNode.firstElementChild.firstElementChild.lastElementChild.firstElementChild.textContent
+		console.log(name)
+		let products_= JSON.parse(localStorage.getItem("products"))
+		console.log(products_)
+		for (var key in products_) {
+					if (products_[key].name == name) {
+						products_.pop(key)
+						localStorage.setItem("products", JSON.stringify(products_))
+						break;
+					}
+		}
+		showCarSales()
 		}
 		function less(e){
 			var less_=e;
@@ -306,18 +322,6 @@
 				for (var key in products) {
 					//console.log(products[key].id)
 					if (products[key].id == e.id) {
-						//console.log(products[key].id, e.id + " is equals")
-						/*fetch('http://localhost:'+window.location.port+'/totalItem')
-						.then(response => response.json())
-						.then(data => {
-							if (data<products[key].total){
-							console.log("Se supera el total de productos")
-							}
-							});*/
-
-							/*var response = await fetch('http://localhost:'+window.location.port+'/totalItem');
-							var data = await response.json();*/
-							//console.log(data);	
 						products[key].total += 1
 						console.log(products)
 						
