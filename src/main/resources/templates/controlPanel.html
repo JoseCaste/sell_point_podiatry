@@ -42,8 +42,8 @@
 		<div class="container">
 			<div class="row align-items-center">
 				<div class="col-lg-3">
-					<div class="brand-wrap">
-						<img class="logo" th:src="@{/img/logo.jpeg}" width="65%">
+					<div class="brand-wrap" style="padding-left: 25%">
+						<img class="logo" th:src="@{/img/logo.jpeg}" width="100%">
 						<!-- h2 class="logo-text">Bienvenido a Podiatry</h2-->
 					</div>
 					<!-- brand-wrap.// -->
@@ -241,7 +241,7 @@
 			var tbody = document.querySelector("#car_sales");
 			tbody.innerHTML = "";
 			for (var key in products) {
-				tbody.innerHTML += "<tr><td><figure class='media'><div class='img-wrap'><img src='" + products[key].src + "' class='img-thumbnail img-xs'></div><figcaption class='media-body'><h6 class='title text-truncate'>" + products[key].name + "</h6></figcaption></figure></td><td class='text-center'><div class='m-btn-group m-btn-group--pill btn-group mr-2' role='group' aria-label='...'> <button type='button' class='m-btn btn btn-default'> <img id='less' src='img/less.png' height='15' onclick='less(this)'/></i></button><button type='button' class='m-btn btn btn-default' >"+products[key].total+"</button><button type='button' class='m-btn btn btn-default'><img id='plus' src='img/plus.png' height='15' onclick='plus(this)'/></i></button></div></td><td><div class='price-wrap'><var class='price'>" + products[key].price + "</var></div> </td><td class='text-right'><div href='#' class='btn btn-outline-danger'> <img src='img/trash.png' height='15' onclick='deleteItem(this)' /></div></td> </tr>"
+				tbody.innerHTML += "<tr><td><figure class='media'><div class='img-wrap'><img src='" + products[key].src + "' class='img-thumbnail img-xs'></div><figcaption class='media-body'><h6 class='title text-truncate'>" + products[key].name + "</h6></figcaption></figure></td><td class='text-center'><div class='m-btn-group m-btn-group--pill btn-group mr-2' role='group' aria-label='...'> <button type='button' class='m-btn btn btn-default'> <img id='less' src='img/less.png' height='15' onclick='less(this)'/></i></button><button type='button' class='m-btn btn btn-default' >"+products[key].total+"</button><button type='button' class='m-btn btn btn-default'><img id='plus' src='img/plus.png' height='15' onclick='plus(this)'/></i></button></div></td><td><div class='price-wrap'><var class='price'>$" + products[key].price + "</var></div> </td><td class='text-right'><div href='#' class='btn btn-outline-danger'> <img src='img/trash.png' height='15' onclick='deleteItem(this)' /></div></td> </tr>"
 				mount+=parseFloat(products[key].price)*products[key].total
 			}
 			subtotal.textContent="$"+mount
@@ -274,26 +274,26 @@
 			2: button.m-btn.btn.btn-default
 			3: button.m-btn.btn.btn-default
 			*/
-			//var nodes= document.querySelector("#less").parentNode.parentNode.childNodes
-			if(parseInt(e.parentNode.parentNode.childNodes[2].innerHTML)>0){
+			if(parseInt(e.parentNode.parentNode.childNodes[2].innerHTML)>1){
 				var newTotal=parseInt(e.parentNode.parentNode.childNodes[2].innerHTML)-1
 				var nodes= e.parentNode.parentNode.childNodes[2].innerHTML= newTotal
-			}
-			//document.querySelector("#plus").parentNode.parentNode.parentNode.parentNode return a table td
-			//document.querySelector("#plus").parentNode.parentNode.parentNode.parentNode.firstElementChild return td elements
-			//document.querySelector("#plus").parentNode.parentNode.parentNode.parentNode.firstElementChild.lastElementChild.lastElementChild.firstElementChild return a name´s item
-			
-			var name=e.parentNode.parentNode.parentNode.parentNode.firstElementChild.lastElementChild.lastElementChild.firstElementChild.textContent;
+				var name=e.parentNode.parentNode.parentNode.parentNode.firstElementChild.lastElementChild.lastElementChild.firstElementChild.textContent;
 			var products_ = JSON.parse(localStorage.getItem("products"));
 			for (var key in products_) {
 					console.log(products_[key].name, name)
 					if (products_[key].name == name) {
 						products_[key].total = newTotal 
-						console.log(products_)
 						localStorage.setItem("products", JSON.stringify(products_))
+						break;
 					}
 				}
 				showCarSales()
+			}
+			//document.querySelector("#plus").parentNode.parentNode.parentNode.parentNode return a table td
+			//document.querySelector("#plus").parentNode.parentNode.parentNode.parentNode.firstElementChild return td elements
+			//document.querySelector("#plus").parentNode.parentNode.parentNode.parentNode.firstElementChild.lastElementChild.lastElementChild.firstElementChild return a name´s item
+			
+			
 		}
 		
 		function plus(e){
