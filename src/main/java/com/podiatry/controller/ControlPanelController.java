@@ -34,25 +34,5 @@ public class ControlPanelController {
 		return "index";
 	}
 	
-	@GetMapping("/uploadImage")
-	public String saveProduct() {
-		String [] names = {"Pinza","Crema verde","Aceite","Plantilla","Soporte","Kit","Exfoliante"};
-		List<Product> products= new ArrayList<>();
-		for (int i=0;i<7;i++) {
-			try {
-				File file = new File(String.format("C:\\img\\%d.jpg",i));
-				byte[] imageBytes = Files.readAllBytes(file.toPath());
-	            Base64.Encoder encoder = Base64.getEncoder();
-	            String encoded = encoder.encodeToString(imageBytes);
-	            Random random= new Random();
-				products.add(new Product(names[i],random.nextInt(200-10)+10, random.nextInt(200-10)+10,encoded));
-			} catch (Exception e) {
-				// TODO: handle exception
-				e.printStackTrace();
-			}	
-			
-		}
-		repository.saveAll(products);
-		return "index";
-	}
+	
 }

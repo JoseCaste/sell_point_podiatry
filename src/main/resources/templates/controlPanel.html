@@ -43,8 +43,8 @@
 			<div class="row align-items-center">
 				<div class="col-lg-3">
 					<div class="brand-wrap">
-						<img class="logo" th:src="@{/img/foot_header.png}">
-						<h2 class="logo-text">Bienvenido a Podiatry</h2>
+						<img class="logo" th:src="@{/img/logo.jpeg}" width="65%">
+						<!-- h2 class="logo-text">Bienvenido a Podiatry</h2-->
 					</div>
 					<!-- brand-wrap.// -->
 				</div>
@@ -75,7 +75,7 @@
 						<div class="widget-header dropdown">
 							<a href="#" class="ml-3 icontext" data-toggle="dropdown"
 								data-offset="20,10"> <img th:if="${!session.isEmpty()}"
-								th:src="@{/img/avatars/bshbsh.png}" class="avatar" alt=""
+								th:src="@{/img/user_profile.png}" class="avatar" alt=""
 								th:text="  ${session.user}">
 								<img th:if="${session.isEmpty()}"
 								th:src="@{/img/user.png}" class="avatar" alt="">
@@ -315,6 +315,7 @@
 				showCarSales()
 		}
 		function addCar(e) {
+		console.log(e)
 			var products = localStorage.getItem("products");
 			var flag=false;
 			if (products != null) {
@@ -408,7 +409,7 @@
 			var row_item=document.querySelector("#row-item");
 			row_item.innerHTML="";
 			for (var key in products) {
-				row_item.innerHTML+="<div class='col-md-3'><figure class='card card-product'><span class='badge-new'> Nuevo </span><div class='img-wrap'><img src='data:image/jpeg;base64,"+products[key].img+"'  id='img"+products[key].id_product+"'><a class='btn-overlay' href='#'><i class='fa fa-search-plus'></i> Vista rápida</a></div><figcaption class='info-wrap'><a href='#' class='title' id='name"+products[key].name+"'> "+products[key].name+"</a><div class='action-wrap'><a href='#' class='btn btn-primary btn-sm float-right' id='"+products[key].id_product+"' onclick='addCar(this)'> <img src='/img/car_of_sales.png' height='15' /> Add <span> ("+products[key].total+")</span> </a> <div class='price-wrap h5'>$<span class='price-new' id='price"+products[key].id_product+"'> "+products[key].price+" </span></div></div></figcaption></figure></div>"	
+				row_item.innerHTML+="<div class='col-md-3'><figure class='card card-product'><span class='badge-new'> Nuevo </span><div class='img-wrap'><img src='data:image/jpeg;base64,"+products[key].img+"'  id='img"+products[key].id_product+"'><a class='btn-overlay' href='#'><i class='fa fa-search-plus'></i> Vista rápida</a></div><figcaption class='info-wrap'><a href='#' class='title' id='name"+products[key].id_product+"'> "+products[key].name+"</a><div class='action-wrap'><a href='#' class='btn btn-primary btn-sm float-right' id='"+products[key].id_product+"' onclick='addCar(this)'> <img src='/img/car_of_sales.png' height='15' /> Agregar <span> ("+products[key].total+")</span> </a> <div class='price-wrap h5'>$<span class='price-new' id='price"+products[key].id_product+"'> "+products[key].price+" </span></div></div></figcaption></figure></div>"	
 			}
 			
 			

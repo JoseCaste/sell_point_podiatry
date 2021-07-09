@@ -16,9 +16,11 @@ public class QueriesProduct {
 	
 	@GetMapping("/getProduct")
 	public ArrayList<Product> getProduct(@RequestParam(name="name") String name){
-		return repository.getByName(name);
-		
-		
+		ArrayList<Product> all= repository.getByName(name);
+		for (Product product : all) {
+			System.out.println(product.toString());
+		}
+		return all; 
 	}
 
 }
