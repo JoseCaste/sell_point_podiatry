@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,6 +29,7 @@ public class User {
 	private String userName;
 	private String password;
 	
+	@Transient
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private List<Purchase> purchase;
 	
