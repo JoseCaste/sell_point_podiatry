@@ -2,36 +2,33 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-<meta charset="utf-8">
-<title>Podiatry</title>
-<style>
-.avatar {
-	vertical-align: middle;
-	width: 35px;
-	height: 35px;
-	border-radius: 50%;
-}
+	<meta charset="utf-8">
+	<title>Podiatry</title>
+	<style>
+		.avatar {
+			vertical-align: middle;
+			width: 35px;
+			height: 35px;
+			border-radius: 50%;
+		}
 
-.bg-default, .btn-default {
-	background-color: #f2f3f8;
-}
+		.bg-default,
+		.btn-default {
+			background-color: #f2f3f8;
+		}
 
-.btn-error {
-	color: #ef5f5f;
-}
-</style>
-<link rel="shortcut icon" type="image/x-icon"
-	th:href="@{/img/foot_header.png}">
-<link rel="apple-touch-icon" sizes="180x180"
-	th:href="@{/img/logos/squanchy.jpg}">
-<link rel="icon" type="image/png" sizes="32x32"
-	th:href="@{/img/logos/squanchy.jpg}">
-<!-- jQuery -->
-<!-- Bootstrap4 files-->
-<link th:href="@{/css/bootstrap.css}" rel="stylesheet" type="text/css" />
-<link th:href="@{/css/ui.css}" rel="stylesheet" type="text/css" />
-<link th:href="@{/css/OverlayScrollbars.css}" type="text/css"
-	rel="stylesheet" />
+		.btn-error {
+			color: #ef5f5f;
+		}
+	</style>
+	<link rel="shortcut icon" type="image/x-icon" th:href="@{/img/foot_header.png}">
+	<link rel="apple-touch-icon" sizes="180x180" th:href="@{/img/logos/squanchy.jpg}">
+	<link rel="icon" type="image/png" sizes="32x32" th:href="@{/img/logos/squanchy.jpg}">
+	<!-- jQuery -->
+	<!-- Bootstrap4 files-->
+	<link th:href="@{/css/bootstrap.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/ui.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/OverlayScrollbars.css}" type="text/css" rel="stylesheet" />
 
 
 
@@ -66,26 +63,24 @@
 					<div class="widgets-wrap d-flex justify-content-end">
 						<div class="widget-header">
 							<a href="#" class="icontext"> <a href="#"
-								class="btn btn-primary m-btn m-btn--icon m-btn--icon-only">
+									class="btn btn-primary m-btn m-btn--icon m-btn--icon-only">
 									<img th:src="@{/img/home.png}" height="25" />
-							</a>
+								</a>
 							</a>
 						</div>
 						<!-- widget .// -->
 						<div class="widget-header dropdown">
-							<a href="#" class="ml-3 icontext" data-toggle="dropdown"
-								data-offset="20,10"> <img th:if="${!session.isEmpty()}"
-								th:src="@{/img/user_profile.png}" class="avatar" alt=""
-								th:text="  ${session.user}">
-								<img th:if="${session.isEmpty()}"
-								th:src="@{/img/user.png}" class="avatar" alt="">
+							<a href="#" class="ml-3 icontext" data-toggle="dropdown" data-offset="20,10"> <img
+									th:if="${!session.isEmpty()}" th:src="@{/img/user_profile.png}" class="avatar"
+									alt="" th:text="  ${session.user}">
+								<img th:if="${session.isEmpty()}" th:src="@{/img/user.png}" class="avatar" alt="">
 							</a> <span style="color: blue;"> </span>
 							<div class="dropdown-menu dropdown-menu-right">
-							<form th:action="@{/logout}" method="GET">
-							<button type="submit" class="dropdown-item"><i
-									class="fa fa-sign-out-alt"></i> Cerrar sesión</button>
-							</form>
-								
+								<form th:action="@{/logout}" method="GET">
+									<button type="submit" class="dropdown-item"><i class="fa fa-sign-out-alt"></i>
+										Cerrar sesión</button>
+								</form>
+
 							</div>
 							<!--  dropdown-menu .// -->
 						</div>
@@ -105,26 +100,9 @@
 			<div class="row">
 				<div class="col-md-8 card padding-y-sm card ">
 					<ul class="nav bg radius nav-pills nav-fill mb-3 bg" role="tablist">
-						<li class="nav-item"><a class="nav-link active show"
-							data-toggle="pill" href="#nav-tab-card"> <i
-								class="fa fa-tags"></i> Todos
-						</a></li>
-						<!-- li class="nav-item"><a class="nav-link" data-toggle="pill"
-							href="#nav-tab-paypal"> <i class="fa fa-tags "></i> Category
-								1
-						</a></li>
-						<li class="nav-item"><a class="nav-link" data-toggle="pill"
-							href="#nav-tab-bank"> <i class="fa fa-tags "></i> Category 2
-						</a></li>
-						<li class="nav-item"><a class="nav-link" data-toggle="pill"
-							href="#nav-tab-bank"> <i class="fa fa-tags "></i> Category 3
-						</a></li>
-						<li class="nav-item"><a class="nav-link" data-toggle="pill"
-							href="#nav-tab-bank"> <i class="fa fa-tags "></i> Category 4
-						</a></li>
-						<li class="nav-item"><a class="nav-link" data-toggle="pill"
-							href="#nav-tab-bank"> <i class="fa fa-tags "></i> Category 5
-						</a></li-->
+						<li class="nav-item"><a class="nav-link active show" data-toggle="pill" href="#nav-tab-card"> <i
+									class="fa fa-tags"></i> Todos
+							</a></li>
 					</ul>
 					<span id="items">
 						<div class="row" id="row-item">
@@ -135,19 +113,21 @@
 										<div class="img-wrap">
 											<img th:id="img+${product.id_product}"
 												th:src="@{'data:image/jpeg;base64,'+${product.img}}">
-											<a class="btn-overlay" href="#"><i
-												class="fa fa-search-plus"></i> Vista rápida</a>
+											<a class="btn-overlay" href="#"><i class="fa fa-search-plus"></i> Vista
+												rápida</a>
 										</div>
 										<figcaption class="info-wrap">
 											<a href="#" class="title" th:id="name+${product.id_product}"
 												th:text="${product.name}"></a>
 											<div class="action-wrap">
-												<button th:disabled="${session.isEmpty()}"	class="btn btn-primary btn-sm float-right" 
+												<button th:disabled="${session.isEmpty()}"
+													class="btn btn-primary btn-sm float-right"
 													th:id="${product.id_product}" onclick="addCar(this)"> <img
-													th:src="@{/img/car_of_sales.png}" height="15" /> Agregar
+														th:src="@{/img/car_of_sales.png}" height="15" /> Agregar
 													<span th:text="'('+${product.total+')'}"></span>
 												</button>
-												<div class="price-wrap h5">$<span class="price-new" th:id="price+${product.id_product}"
+												<div class="price-wrap h5">$<span class="price-new"
+														th:id="price+${product.id_product}"
 														th:text="${product.price}"></span>
 												</div>
 												<!-- price-wrap.// -->
@@ -201,7 +181,7 @@
 						<div class="row">
 							<div class="col-md-6" id="cancelSell" onclick="deleteSells()">
 								<a href="#" class="btn  btn-default btn-error btn-lg btn-block"><img
-									th:src="@{/img/cancel.png}" height="35" /> Cancelar </a>
+										th:src="@{/img/cancel.png}" height="35" /> Cancelar </a>
 							</div>
 							<div class="col-md-6">
 								<!-- form method="post" th:action="@{/buyItem}">
@@ -210,8 +190,8 @@
 									</button>
 								</form-->
 
-								<button th:disabled="${session.isEmpty()}"  class="btn  btn-primary btn-lg btn-block" onclick="buyItem()"><img
-									th:src="@{/img/buy.png}" height="35" /> Pagar </button>
+								<button th:disabled="${session.isEmpty()}" class="btn  btn-primary btn-lg btn-block"
+									onclick="buyItem()"><img th:src="@{/img/buy.png}" height="35" /> Pagar </button>
 							</div>
 						</div>
 					</div>
@@ -224,47 +204,59 @@
 	<script th:src="@{/js/jquery-2.0.0.min.js}" type="text/javascript"></script>
 	<script th:src="@{/js/bootstrap.bundle.min.js}" type="text/javascript"></script>
 	<script th:src="@{js/OverlayScrollbars.js}" type="text/javascript"></script>
-	<script th:src="@{/js/}" type="text/javascript"></script>
+	<!--script th:src="@{/js/}" type="text/javascript"></script-->
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	<script type="text/javascript">
 		//global variable
 		var id_user = "[[${session.id}]]";
-		console.log(id_user);
-	
+		var clear_car_sales="[[${payment_success}]]";
+		if(clear_car_sales == 'true'){
+			localStorage.removeItem("products");
+		}
+
 		showCarSales();
 		function showCarSales() {
-			var mount=0;
-			var subtotal=document.querySelector("#subtotal")
-			var total=document.querySelector("#total")
+			var mount = 0;
+			var subtotal = document.querySelector("#subtotal")
+			var total = document.querySelector("#total")
 			var products = localStorage.getItem("products");
 			products = JSON.parse(products)
 			var tbody = document.querySelector("#car_sales");
 			tbody.innerHTML = "";
 			for (var key in products) {
-				tbody.innerHTML += "<tr><td><figure class='media'><div class='img-wrap'><img src='" + products[key].src + "' class='img-thumbnail img-xs'></div><figcaption class='media-body'><h6 class='title text-truncate'>" + products[key].name + "</h6></figcaption></figure></td><td class='text-center'><div class='m-btn-group m-btn-group--pill btn-group mr-2' role='group' aria-label='...'> <button type='button' class='m-btn btn btn-default'> <img id='less' src='img/less.png' height='15' onclick='less(this)'/></i></button><button type='button' class='m-btn btn btn-default' >"+products[key].total+"</button><button type='button' class='m-btn btn btn-default'><img id='plus' src='img/plus.png' height='15' onclick='plus(this)'/></i></button></div></td><td><div class='price-wrap'><var class='price'>$" + products[key].price + "</var></div> </td><td class='text-right'><div href='#' class='btn btn-outline-danger'> <img src='img/trash.png' height='15' onclick='deleteItem(this)' /></div></td> </tr>"
-				mount+=parseFloat(products[key].price)*products[key].total
+				tbody.innerHTML += "<tr><td><figure class='media'><div class='img-wrap'><img src='" + products[key].src + "' class='img-thumbnail img-xs'></div><figcaption class='media-body'><h6 class='title text-truncate'>" + products[key].name + "</h6></figcaption></figure></td><td class='text-center'><div class='m-btn-group m-btn-group--pill btn-group mr-2' role='group' aria-label='...'> <button type='button' class='m-btn btn btn-default'> <img id='less' src='img/less.png' height='15' onclick='less(this)'/></i></button><button type='button' class='m-btn btn btn-default' >" + products[key].total + "</button><button type='button' class='m-btn btn btn-default'><img id='plus' src='img/plus.png' height='15' onclick='plus(this)'/></i></button></div></td><td><div class='price-wrap'><var class='price'>$" + products[key].price + "</var></div> </td><td class='text-right'><div href='#' class='btn btn-outline-danger'> <img src='img/trash.png' height='15' onclick='deleteItem(this)' /></div></td> </tr>"
+				mount += parseFloat(products[key].price) * products[key].total
 			}
-			subtotal.textContent="$"+mount
-			total.textContent="$"+mount
+			subtotal.textContent = "$" + mount
+			total.textContent = "$" + mount
 		}
-		function deleteItem(e){
-		
-		var deleteItem_=e;
-		let name=e.parentNode.parentNode.parentNode.firstElementChild.firstElementChild.lastElementChild.firstElementChild.textContent
-		console.log(name)
-		let products_= JSON.parse(localStorage.getItem("products"))
-		console.log(products_)
-		for (var key in products_) {
-					if (products_[key].name == name) {
-						products_.pop(key)
-						localStorage.setItem("products", JSON.stringify(products_))
-						break;
-					}
+		function deleteItem(e) {
+
+			var deleteItem_ = e;
+			let name = e.parentNode.parentNode.parentNode.firstElementChild.firstElementChild.lastElementChild.firstElementChild.textContent
+			console.log(name)
+			let products_ = JSON.parse(localStorage.getItem("products"))
+			var id_product = products_.filter(item=> item.name == name)[0].id;
+			products_=products_.filter(item=> item.name != name)
+			localStorage.setItem("products", JSON.stringify(products_))
+			/*for (var key in products_) {
+				if (products_[key].name == name) {
+					id_product = products_[key].id;
+					products_.pop(key)
+					localStorage.setItem("products", JSON.stringify(products_))
+					break;
+				}
+			}*/
+			$.ajax({
+				method: "GET",
+				url: "[[@{/delete/}]]" + id_product + "/" + id_user
+			}).done(function (msg) {
+				//alert("Data Saved: " + msg);
+			});
+			showCarSales()
 		}
-		showCarSales()
-		}
-		function less(e){
-			var less_=e;
+		function less(e) {
+			var less_ = e;
 			//document.querySelector("#plus").parentNode.parentNode return div that contains less icon, total of items, plus icon
 			//document.querySelector("#plus").parentNode.parentNode.childNodes return all divs that contains an array like this 
 			/*
@@ -274,50 +266,64 @@
 			2: button.m-btn.btn.btn-default
 			3: button.m-btn.btn.btn-default
 			*/
-			if(parseInt(e.parentNode.parentNode.childNodes[2].innerHTML)>1){
-				var newTotal=parseInt(e.parentNode.parentNode.childNodes[2].innerHTML)-1
-				var nodes= e.parentNode.parentNode.childNodes[2].innerHTML= newTotal
-				var name=e.parentNode.parentNode.parentNode.parentNode.firstElementChild.lastElementChild.lastElementChild.firstElementChild.textContent;
-			var products_ = JSON.parse(localStorage.getItem("products"));
-			for (var key in products_) {
+			if (parseInt(e.parentNode.parentNode.childNodes[2].innerHTML) > 1) {
+				var newTotal = parseInt(e.parentNode.parentNode.childNodes[2].innerHTML) - 1
+				var nodes = e.parentNode.parentNode.childNodes[2].innerHTML = newTotal
+				var name = e.parentNode.parentNode.parentNode.parentNode.firstElementChild.lastElementChild.lastElementChild.firstElementChild.textContent;
+				var products_ = JSON.parse(localStorage.getItem("products"));
+				for (var key in products_) {
 					console.log(products_[key].name, name)
 					if (products_[key].name == name) {
-						products_[key].total = newTotal 
+						id_product = products_[key].id;
+						products_[key].total = newTotal
 						localStorage.setItem("products", JSON.stringify(products_))
 						break;
 					}
 				}
+				$.ajax({
+					method: "GET",
+					url: "[[@{/less/}]]" + id_product + "/" + id_user
+				})
+					.done(function (msg) {
+					});
 				showCarSales()
 			}
 			//document.querySelector("#plus").parentNode.parentNode.parentNode.parentNode return a table td
 			//document.querySelector("#plus").parentNode.parentNode.parentNode.parentNode.firstElementChild return td elements
 			//document.querySelector("#plus").parentNode.parentNode.parentNode.parentNode.firstElementChild.lastElementChild.lastElementChild.firstElementChild return a name´s item
-			
-			
-		}
-		
-		function plus(e){
-			var plus_=e;
-			
-			var newTotal=parseInt(e.parentNode.parentNode.childNodes[2].innerHTML)+1
-			var nodes= e.parentNode.parentNode.childNodes[2].innerHTML= newTotal
 
-			var name=e.parentNode.parentNode.parentNode.parentNode.firstElementChild.lastElementChild.lastElementChild.firstElementChild.textContent;
+
+		}
+
+		function plus(e) {
+			var plus_ = e;
+
+			var newTotal = parseInt(e.parentNode.parentNode.childNodes[2].innerHTML) + 1
+			var nodes = e.parentNode.parentNode.childNodes[2].innerHTML = newTotal
+
+			var name = e.parentNode.parentNode.parentNode.parentNode.firstElementChild.lastElementChild.lastElementChild.firstElementChild.textContent;
 			var products_ = JSON.parse(localStorage.getItem("products"));
 			for (var key in products_) {
-					console.log(products_[key].name, name)
-					if (products_[key].name == name) {
-						products_[key].total = newTotal 
-						console.log(products_)
-						localStorage.setItem("products", JSON.stringify(products_))
-					}
+				console.log(products_[key].name, name)
+				if (products_[key].name == name) {
+					id_product = products_[key].id;
+					products_[key].total = newTotal
+					console.log(products_)
+					localStorage.setItem("products", JSON.stringify(products_))
 				}
-				showCarSales()
+			}
+			$.ajax({
+				method: "GET",
+				url: "[[@{/plus/}]]" + id_product + "/" + id_user
+			})
+				.done(function (msg) {
+				});
+			showCarSales()
 		}
 		function addCar(e) {
-		console.log(e)
+			console.log(e)
 			var products = localStorage.getItem("products");
-			var flag=false;
+			var flag = false;
 			if (products != null) {
 				products = JSON.parse(products)
 				for (var key in products) {
@@ -325,22 +331,33 @@
 					if (products[key].id == e.id) {
 						products[key].total += 1
 						console.log(products)
-						
-						localStorage.setItem("products", JSON.stringify(products))
-						flag=true
 
+						localStorage.setItem("products", JSON.stringify(products))
+						flag = true
+						$.ajax({
+							method: "GET",
+							url: "[[@{/plus/}]]" + e.id + "/" + id_user
+						}).done(function (msg) {
+							//alert("Data Saved: " + msg);
+						});
 					}
 				}
 				//if flag is false, then item isnt in json object
-				if(!flag){
+				if (!flag) {
 					//var json = []
-						var name = document.querySelector("#name" + e.id).textContent
-						var src = document.querySelector("#img" + e.id).src
-						var price = document.querySelector("#price" + e.id).textContent
-						//var tbody = document.querySelector("#car_sales");
-						var actual_product = { id: e.id, name: name, price: price, total: 1, src: src }
-						products.push(actual_product)
-						localStorage.setItem("products", JSON.stringify(products))
+					var name = document.querySelector("#name" + e.id).textContent
+					var src = document.querySelector("#img" + e.id).src
+					var price = document.querySelector("#price" + e.id).textContent
+					//var tbody = document.querySelector("#car_sales");
+					var actual_product = {id: e.id, name: name, price: price, total: 1, src: src}
+					$.ajax({
+						method: "GET",
+						url: "[[@{/add/}]]" + e.id + "/" + id_user
+					}).done(function (msg) {
+						//alert("Data Saved: " + msg);
+					});
+					products.push(actual_product)
+					localStorage.setItem("products", JSON.stringify(products))
 				}
 			} else {
 				console.log("firts time")
@@ -348,71 +365,62 @@
 				var name = document.querySelector("#name" + e.id).textContent
 				var src = document.querySelector("#img" + e.id).src
 				var price = document.querySelector("#price" + e.id).textContent
-				var actual_product = { id: e.id, name: name, price: price, total: 1, src: src }
+				var actual_product = {id: e.id, name: name, price: price, total: 1, src: src}
 				json.push(actual_product)
+				$.ajax({
+					method: "GET",
+					url: "[[@{/add/}]]" + e.id + "/" + id_user
+				}).done(function (msg) {
+					//alert("Data Saved: " + msg);
+				});
 				localStorage.setItem("products", JSON.stringify(json))
 			}
 
 			showCarSales()
 		}
 		//<img th:src="@{/img/car_of_sales.png}" height="15"/>
-		function deleteSells(){
+		function deleteSells() {
 			console.log("delete")
 			localStorage.removeItem("products")
 			location.reload(true)
 		}
-		async function buyItem(){
-			
-			var products= JSON.parse(localStorage.getItem("products"))
-			if(products!=null && Object.keys( JSON.parse(localStorage.getItem("products"))).length>0){
-			console.log(products)
-			var port= window.location.port;
-			
-			let response = await fetch('http://localhost:'+port+'/buyItem/'+id_user, {
-			  method: 'POST',
-			  headers: {
-			    'Content-Type': 'application/json;charset=utf-8'
-			  },
-			  body: JSON.stringify(products)
-			});
-			let result = await response;
-			if(result.status == 200){
+		function buyItem() {
+			var products = JSON.parse(localStorage.getItem("products"))
+			if (products != null && Object.keys(JSON.parse(localStorage.getItem("products"))).length > 0) {
 				swal({
-				  title: "Compra con éxito!",
-				  text: "Presiona ok para seguir comprando",
-				  icon: "success",
-				  buttons: true,
-				})
-				.then((ok) => {
-				  deleteSells()
+					  title: "¿Desea pagar sus productos?",
+					  text: "Será enviado a la plataforma de pago",
+					  icon: "warning",
+					  buttons: true,
+					  dangerMode: true,
+					})
+					.then((willDelete) => {
+					  if (willDelete) {
+					   window.location.href="[[@{/buyItem/}]]"+id_user 
+					  }
 				});
-			}else 
-			swal("Oops!", "Algo ocurrió en el proceso!", "error");
 			}else swal("Lo sentimos", "Debes tener productos para poder pagar!", "error");
-			
-			
-			
 		}
 		function itemTyped(e) {
-			var port= window.location.port;
+			var port = window.location.port;
 			let xhr = new XMLHttpRequest();
 
-			xhr.open('GET', 'http://localhost:'+port+'/getProduct?name='+e.value);
+			xhr.open('GET', 'http://localhost:' + port + '/getProduct?name=' + e.value);
 			xhr.send();
-			xhr.onload = function() {
-			  let responseObj = xhr.responseText;
-			  filterItem(JSON.parse(responseObj))
+			xhr.onload = function () {
+				let responseObj = xhr.responseText;
+				filterItem(JSON.parse(responseObj))
 			};
 		}
 		function filterItem(products) {
 			console.log(products)
-			var row_item=document.querySelector("#row-item");
-			row_item.innerHTML="";
+			var row_item = document.querySelector("#row-item");
+			row_item.innerHTML = "";
 			for (var key in products) {
-				row_item.innerHTML+="<div class='col-md-3'><figure class='card card-product'><span class='badge-new'> Nuevo </span><div class='img-wrap'><img src='data:image/jpeg;base64,"+products[key].img+"'  id='img"+products[key].id_product+"'><a class='btn-overlay' href='#'><i class='fa fa-search-plus'></i> Vista rápida</a></div><figcaption class='info-wrap'><a href='#' class='title' id='name"+products[key].id_product+"'> "+products[key].name+"</a><div class='action-wrap'><a href='#' class='btn btn-primary btn-sm float-right' id='"+products[key].id_product+"' onclick='addCar(this)'> <img src='/img/car_of_sales.png' height='15' /> Agregar <span> ("+products[key].total+")</span> </a> <div class='price-wrap h5'>$<span class='price-new' id='price"+products[key].id_product+"'> "+products[key].price+" </span></div></div></figcaption></figure></div>"	
+				row_item.innerHTML += "<div class='col-md-3'><figure class='card card-product'><span class='badge-new'> Nuevo </span><div class='img-wrap'><img src='data:image/jpeg;base64," + products[key].img + "'  id='img" + products[key].id_product + "'><a class='btn-overlay' href='#'><i class='fa fa-search-plus'></i> Vista rápida</a></div><figcaption class='info-wrap'><a href='#' class='title' id='name" + products[key].id_product + "'> " + products[key].name + "</a><div class='action-wrap'><a href='#' class='btn btn-primary btn-sm float-right' id='" + products[key].id_product + "' onclick='addCar(this)'> <img src='/img/car_of_sales.png' height='15' /> Agregar <span> (" + products[key].total + ")</span> </a> <div class='price-wrap h5'>$<span class='price-new' id='price" + products[key].id_product + "'> " + products[key].price + " </span></div></div></figcaption></figure></div>"
 			}
-			
-			
+
+
 		}
 	</script>
 	<script>
