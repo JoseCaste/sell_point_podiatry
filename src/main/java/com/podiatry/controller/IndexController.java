@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.mercadopago.MercadoPago;
+import com.mercadopago.resources.Preference;
+import com.mercadopago.resources.datastructures.preference.BackUrls;
+import com.mercadopago.resources.datastructures.preference.Item;
+import com.mercadopago.resources.datastructures.preference.Payer;
 import com.podiatry.model.Product;
 import com.podiatry.model.User;
 import com.podiatry.repository.ProductRepository;
@@ -47,6 +52,37 @@ public class IndexController {
 			return "index";
 		}
 		
+	}
+	@GetMapping("/pago")
+	public String pago(Model model) {
+		Preference preference = new Preference();
+		preference.setBackUrls(new BackUrls().setFailure("htttp://localhost:8080/failure")
+				.setPending("http://localhost:8080/pending")
+				.setSuccess("http://localhost:8080/success"));
+		try {
+			MercadoPago.SDK.configure("TEST-2907327363456926-122016-ff4c3e130dafd4857504c8decced8a77-1043363108");
+
+
+			Item item = new Item();
+			item.setId("1234")
+			    .setTitle("Blue shirt")
+			    .setQuantity(1)
+			    .setCategoryId("MXN")
+			    .setUnitPrice((float) 20);
+			
+			Payer payer = new Payer();
+			payer.setEmail("jotaguzman08@gmail.com");
+			
+			preference.setPayer(payer);
+			preference.appendItem(item);
+			preference.save();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}finally {
+			System.out.println("----------> "+preference.getSandboxInitPoint());
+		}
+		return String.format("redirect:%s", preference.getSandboxInitPoint());
 	}
 	public String md5(String password) {
 		try {

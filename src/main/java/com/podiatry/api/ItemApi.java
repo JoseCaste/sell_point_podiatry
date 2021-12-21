@@ -1,75 +1,95 @@
 package com.podiatry.api;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import com.podiatry.model.CarSales;
 import com.podiatry.model.Product;
-import com.podiatry.model.Purchase;
 import com.podiatry.model.User;
+import com.podiatry.repository.CarSalesRepository;
 import com.podiatry.repository.ProductRepository;
-import com.podiatry.repository.PurchaseRepository;
 import com.podiatry.repository.UserRepository;
 
 @RestController
-public class BuyItemApi {
+public class ItemApi {
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
 	@Autowired
-	ProductRepository productRepository;
-	@Autowired
-	PurchaseRepository purchaseRepository;
-
+	private ProductRepository productRepository;
+	@Autowired 
+	private CarSalesRepository carSalesRepository;
 	
-	@PostMapping("/buyItem/{id}")
-	public ResponseEntity<String> buyItem(@RequestBody String json, @PathVariable Long id) {
-		User user = userRepository.findById(id).get();
-		Purchase purchase = new Purchase();
-		ArrayList<Product> products = new ArrayList<Product>();
-		try {
-			
-			purchase.setUser(user);
-			purchase.setDate_(Timestamp.valueOf(LocalDateTime.now()));
-			
-
-			JSONArray array = new JSONArray(json);
-			for (int i = 0; i < array.length(); i++) {
-				JSONObject object = array.getJSONObject(i);
-
-				Product product=productRepository.findById(Long.parseLong(object.getString("id"))).get();
-				products.add(product);
-				productRepository.updateProduct(object.getInt("total"), product.getId_product());
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			return new ResponseEntity<>("Algo ocurrió en el proceso", HttpStatus.SERVICE_UNAVAILABLE);
-		}
-		purchase.setProducts(products);
-		purchaseRepository.save(purchase);
-		HttpHeaders headers = new HttpHeaders();
-	    headers.set("Content-type", "text/plain");
-	    return new ResponseEntity<>("Compra realizada con éxito", headers,HttpStatus.OK);
-	}
+	private final Boolean ACTIVE=true;
 	
 	@GetMapping("/totalItem/{id}")
 	public Map<String, Integer> totalItem(@PathVariable("id") Long id){
-		System.out.println(id);
 		HashMap<String, Integer> map = new HashMap<>();
 		map.put("total", productRepository.findById(id).get().getTotal());
 		return  map;
 	}
-
+	@GetMapping("/add/{id}/{idUser}")
+	public ResponseEntity<Object> addItem(@PathVariable("id") Long idProduct, @PathVariable("idUser") Long idUser){
+		User user= this.userRepository.findById(idUser).get();
+		Optional<Product> prodOptional= this.productRepository.findById(idProduct);
+		if(prodOptional.isPresent()) {
+			Optional <CarSales> carSalesOptional= this.carSalesRepository.findByProductAndUser(prodOptional.get(),user);
+			if(carSalesOptional.isPresent()) {
+				//carSalesOptional=this.carSalesRepository.findByProduct(prodOptional.get());
+				CarSales carSales= carSalesOptional.get();
+				carSales.setTotal(carSales.getTotal()+1);
+				this.carSalesRepository.save(carSales);
+				return new ResponseEntity<>("Aumentado",HttpStatus.OK);
+			}else {
+				CarSales carSales_= new CarSales(ACTIVE,1, user,prodOptional.get());
+				this.carSalesRepository.save(carSales_);
+				return new ResponseEntity<>("Agregado",HttpStatus.OK);
+			}	
+		}else return new ResponseEntity<>("El producto no está disponible o ha sido removido",HttpStatus.NOT_FOUND); 
+	}
+	@GetMapping("/plus/{id}/{idUser}")
+	public ResponseEntity<Object> increeseItem(@PathVariable("id") Long idProduct, @PathVariable("idUser") Long idUser){
+		User user= this.userRepository.findById(idUser).get();
+		Optional<Product> prodOptional= this.productRepository.findById(idProduct);
+		if(prodOptional.isPresent()) {
+			Optional <CarSales> carSalesOptional= this.carSalesRepository.findByProductAndUser(prodOptional.get(),user);
+			if(carSalesOptional.isPresent()) {
+				CarSales carSales= carSalesOptional.get();
+				carSales.setTotal(carSales.getTotal()+1);
+				this.carSalesRepository.save(carSales);
+				return new ResponseEntity<>("Aumentado",HttpStatus.OK);
+			}else return new ResponseEntity<>("El producto no está disponible o ha sido removido del carrito de compras",HttpStatus.NOT_FOUND);
+		}else return new ResponseEntity<>("El producto no está disponible o ha sido removido",HttpStatus.NOT_FOUND);
+	}
+	@GetMapping("/less/{id}/{idUser}")
+	public ResponseEntity<Object> decreeseItem(@PathVariable("id") Long idProduct, @PathVariable("idUser") Long idUser){
+		User user= this.userRepository.findById(idUser).get();
+		Optional<Product> prodOptional= this.productRepository.findById(idProduct);
+		if(prodOptional.isPresent()) {
+			Optional <CarSales> carSalesOptional= this.carSalesRepository.findByProductAndUser(prodOptional.get(),user);
+			if(carSalesOptional.isPresent()) {
+				CarSales carSales= carSalesOptional.get();
+				carSales.setTotal(carSales.getTotal()-1);
+				this.carSalesRepository.save(carSales);
+				return new ResponseEntity<>("Decrementado",HttpStatus.OK);
+			}else return new ResponseEntity<>("El producto no está disponible o ha sido removido del carrito de compras",HttpStatus.NOT_FOUND);
+		}else return new ResponseEntity<>("El producto no está disponible o ha sido removido",HttpStatus.NOT_FOUND);
+	}
+	@GetMapping("/delete/{id}/{idUser}")
+	public ResponseEntity<Object> deleteItem(@PathVariable("id") Long idProduct, @PathVariable("idUser") Long idUser){
+		User user= this.userRepository.findById(idUser).get();
+		Optional<Product> prodOptional= this.productRepository.findById(idProduct);
+		if(prodOptional.isPresent()) {
+			Optional <CarSales> carSalesOptional= this.carSalesRepository.findByProductAndUser(prodOptional.get(),user);
+			if(carSalesOptional.isPresent()) {
+				this.carSalesRepository.delete(carSalesOptional.get());
+				return new ResponseEntity<>("Eliminado",HttpStatus.OK);
+			}else return new ResponseEntity<>("El producto no está disponible o ha sido removido del carrito de compras",HttpStatus.NOT_FOUND); 
+		}else return new ResponseEntity<>("El producto no está disponible o ha sido removido",HttpStatus.NOT_FOUND);
+	}
 }

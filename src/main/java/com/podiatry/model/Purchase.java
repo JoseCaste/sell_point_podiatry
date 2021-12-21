@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -40,7 +41,21 @@ public class Purchase {
 			)
 	@ManyToMany(cascade = CascadeType.ALL)
 	private List<Product> products;
-
+	
+	@Column(name="total")
+	private Double total;
+	
+	private Integer collection_id;
+	private String collection_status;
+	private Integer payment_id;
+	private String status;
+	private String external_reference;
+	private String payment_type;
+	private String merchant_order_id;
+	private String preference_id;
+	private String site_id;
+	private String processing_mode;
+	private String merchant_id;
 	public Purchase() {
 	
 	}

@@ -1,0 +1,65 @@
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+	  <meta charset="utf-8">
+	  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+      <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,400i,700,900&display=swap" rel="stylesheet">
+  </head>
+    <title>Notificación Pago | Podiatry</title>
+  	<link rel="shortcut icon" type="image/x-icon" th:href="@{/img/foot_header.png}">
+	<link rel="apple-touch-icon" sizes="180x180" th:href="@{/img/logos/squanchy.jpg}">
+	<link rel="icon" type="image/png" sizes="32x32" th:href="@{/img/logos/squanchy.jpg}">
+	<!-- jQuery -->
+	<!-- Bootstrap4 files-->
+	<link th:href="@{/css/bootstrap.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/ui.css}" rel="stylesheet" type="text/css" />
+    <style>
+      body {
+        text-align: center;
+        padding: 40px 0;
+        background: #EBF0F5;
+      }
+        h1 {
+          color: #88B04B;
+          font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
+          font-weight: 900;
+          font-size: 40px;
+          margin-bottom: 10px;
+        }
+        p {
+          color: #404F5E;
+          font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
+          font-size:20px;
+          margin: 0;
+        }
+      i {
+        color: #9ABC66;
+        font-size: 100px;
+        line-height: 200px;
+        margin-left:-15px;
+      }
+      .card {
+        background: white;
+        padding: 60px;
+        border-radius: 4px;
+        box-shadow: 0 2px 3px #C8D0D8;
+        display: inline-block;
+        margin: 0 auto;
+      }
+    </style>
+    <body>
+      <div class="card">
+      <div style="border-radius:200px; height:200px; width:200px; background: #F8FAF5; margin:0 auto;">
+        <i class="checkmark">✓</i>
+      </div>
+        <h1>Pago exitoso</h1>
+        Orden de pago: <strong><span th:text="${id_payment}"></span></strong>
+        <br>
+        Tipo de pago: <strong><span th:text="${payment_type}"></span></strong> 
+        <p>Hemos recibido la confirmación de tu pago;
+        <br/> 
+        <a th:href="@{/controlPanel}" class="btn btn-success"> Presiona aquí para ir a la página de compra</a> </p>
+      </div>
+      <script th:src="@{/js/jquery-2.0.0.min.js}" type="text/javascript"></script>
+	  <script th:src="@{/js/bootstrap.bundle.min.js}" type="text/javascript"></script>
+    </body>
+</html>

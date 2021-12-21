@@ -33,9 +33,10 @@ public class User {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private List<Purchase> purchase;
 	
-	
+	/*@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+	private CarSales carSales;*/
+	@OneToMany(mappedBy = "user")
+	private List<CarSales> carSales;
 	public User() {
-		// TODO Auto-generated constructor stub
-		super();
 	}
 }
