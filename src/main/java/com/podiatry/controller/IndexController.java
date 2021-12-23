@@ -97,7 +97,11 @@ public class IndexController {
 		}
 		return String.format("redirect:%s", preference.getSandboxInitPoint());
 	}
-	
+	@GetMapping("/cris")
+	public String cris(Model model) {
+		model.addAttribute("cris", "PRUEBA CRIS");
+		return "index2";
+	}
 	@GetMapping("/wizard/{id}")
 	public String formWizard(Model model, @PathVariable("id") Long idUser, @ModelAttribute("address") AddressData addressPojo) {
 		Optional<User> userOptional=this.userRepository.findById(idUser);
