@@ -1,11 +1,12 @@
 package com.podiatry.model;
 
 
-import java.util.List;
 
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -37,6 +38,9 @@ public class User {
 	private CarSales carSales;*/
 	@OneToMany(mappedBy = "user")
 	private List<CarSales> carSales;
+	
+	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	private List<Address> addresses;
 	public User() {
 	}
 }

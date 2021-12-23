@@ -12,17 +12,22 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.mercadopago.resources.Preference;
 import com.mercadopago.resources.datastructures.preference.BackUrls;
 import com.mercadopago.resources.datastructures.preference.Item;
 import com.mercadopago.resources.datastructures.preference.Payer;
+import com.podiatry.model.Address;
 import com.podiatry.model.CarSales;
 import com.podiatry.model.Product;
 import com.podiatry.model.Purchase;
 import com.podiatry.model.SuccessCriteria;
 import com.podiatry.model.User;
+import com.podiatry.pojo.AddressData;
+import com.podiatry.repository.AddressRepository;
 import com.podiatry.repository.CarSalesRepository;
 import com.podiatry.repository.ProductRepository;
 import com.podiatry.repository.PurchaseRepository;
@@ -44,7 +49,11 @@ public class ControlPanelController {
 	@Autowired
 	private ProductRepository productRepository;
 	
+	@Autowired
+	private AddressRepository addressRepository;
+	
 	private final String APPROVED="approved";
+	
 	@GetMapping("/session")
 	public String currentSession(Model model) {
 		
@@ -57,14 +66,15 @@ public class ControlPanelController {
 		session.invalidate();
 		return "index";
 	}
-	@GetMapping("/buyItem/{id}")
-	public String buyItem(@PathVariable("id")Long id) {
-		Optional<User> user= this.userRepository.findById(id);
+	//@GetMapping("/buyItem/{id}")
+	@PostMapping("/buyItem")
+	public String buyItem(Model model, @ModelAttribute AddressData address) {
+		Optional<User> user= this.userRepository.findById(address.getIdUser());
 		if(user.isPresent()) {
 			Preference preference = new Preference();
 			preference.setBackUrls(new BackUrls().setFailure("htttp://localhost:8080/failure")
 					.setPending("http://localhost:8080/pending")
-					.setSuccess(String.format("%s/%d", "http://localhost:8080/success",id)));
+					.setSuccess(String.format("%s/%d/%d", "http://localhost:8080/success",user.get().getId(),address.getDomicilioId())));
 			Payer payer = new Payer();
 			payer.setEmail("jotaguzman08@gmail.com");
 			
@@ -89,17 +99,19 @@ public class ControlPanelController {
 			//return "HI";
 		}else return "controlPanel";
 	}
-	@GetMapping("/success/{id}")
-	public String success(@PathVariable("id")Long id, @Validated SuccessCriteria successCriteria, Model model, HttpSession httpSession, RedirectAttributes redirectAttributes) {
+	@GetMapping("/success/{id}/{idAddress}")
+	public String success(@PathVariable("id")Long id, @PathVariable("idAddress") Long idAddress,@Validated SuccessCriteria successCriteria, Model model, HttpSession httpSession, RedirectAttributes redirectAttributes) {
 		if(successCriteria.getStatus().equals(APPROVED)) {
 			Optional<User> user= this.userRepository.findById(id);
-			if(user.isPresent()) {
+			Optional<Address> addresOptional= this.addressRepository.findById(idAddress);
+			if(user.isPresent() && addresOptional.isPresent()) {
 				Purchase purchase = new Purchase();
 				ArrayList<Product> products = new ArrayList<Product>();
 				List<CarSales> list_car_sales=user.get().getCarSales();
 				//list_car_sales.forEach(item-> item.setStatus(false));
 				this.carSalesRepository.deleteAll(list_car_sales);
 				purchase.setUser(user.get());
+				purchase.setAddress(addresOptional.get());
 				purchase.setDate_(Timestamp.valueOf(LocalDateTime.now()));
 				user.get().getCarSales().stream().filter(item->item.getStatus()).forEach(item->{
 				products.add(item.getProduct());
