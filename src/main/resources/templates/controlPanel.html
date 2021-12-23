@@ -396,7 +396,8 @@
 					})
 					.then((willDelete) => {
 					  if (willDelete) {
-					   window.location.href="[[@{/buyItem/}]]"+id_user 
+					   //window.location.href="[[@{/buyItem/}]]"+id_user
+					   window.location.href="[[@{/wizard/}]]"+id_user 
 					  }
 				});
 			}else swal("Lo sentimos", "Debes tener productos para poder pagar!", "error");

@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
@@ -12,16 +13,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.mercadopago.MercadoPago;
 import com.mercadopago.resources.Preference;
 import com.mercadopago.resources.datastructures.preference.BackUrls;
 import com.mercadopago.resources.datastructures.preference.Item;
 import com.mercadopago.resources.datastructures.preference.Payer;
+import com.podiatry.model.Address;
 import com.podiatry.model.Product;
 import com.podiatry.model.User;
+import com.podiatry.pojo.AddressData;
+import com.podiatry.repository.AddressRepository;
 import com.podiatry.repository.ProductRepository;
 import com.podiatry.repository.UserRepository;
 
@@ -29,8 +35,15 @@ import com.podiatry.repository.UserRepository;
 public class IndexController {
 
 	@Autowired
-	private UserRepository repository;
-	@Autowired ProductRepository productRepository;
+	private UserRepository userRepository;
+	@Autowired 
+	private ProductRepository productRepository;
+	@Autowired 
+	private AddressRepository addressRepository;
+	
+	private final Integer SECOND_STEP_WIZARD=1;
+	
+	
 	@GetMapping({ "/", "/index" })
 	public String index(@RequestParam(value = "name", defaultValue = "World", required = true) String name,
 			Model model) {
@@ -40,7 +53,7 @@ public class IndexController {
 
 	@PostMapping("/session")
 	public String session(@ModelAttribute(name = "user") User user, Model model, HttpSession session) {
-		user= repository.getUser(user.getUserName(), md5(user.getPassword()));
+		user= userRepository.getUser(user.getUserName(), md5(user.getPassword()));
 		if ( user!= null) {
 			List<Product> all_products= productRepository.allProducts();
 			session.setAttribute("user", user.getName());
@@ -83,6 +96,30 @@ public class IndexController {
 			System.out.println("----------> "+preference.getSandboxInitPoint());
 		}
 		return String.format("redirect:%s", preference.getSandboxInitPoint());
+	}
+	
+	@GetMapping("/wizard/{id}")
+	public String formWizard(Model model, @PathVariable("id") Long idUser, @ModelAttribute("address") AddressData addressPojo) {
+		Optional<User> userOptional=this.userRepository.findById(idUser);
+		if(userOptional.isPresent()) {
+			User user= userOptional.get();
+			addressPojo.setIdUser(user.getId());
+			model.addAttribute("idUser", user.getId());
+			model.addAttribute("userName",String.format("%s %s" , user.getName(),user.getLastName()));
+			model.addAttribute("address_founded",user.getAddresses());
+		}
+		return "form-wizard";
+	}
+	@PostMapping("/address/save/")
+	public String saveAddress(Model model, @ModelAttribute("address") AddressData addressPojo, RedirectAttributes redirectAttributes) {
+		Optional<User> userOptional=this.userRepository.findById(addressPojo.getIdUser());
+		if(userOptional.isPresent()) {
+			Address address = new Address(addressPojo.getClaveAddress(), addressPojo.getCiudad(), addressPojo.getCp(), addressPojo.getNumero(), addressPojo.getColonia(), addressPojo.getEstado(), addressPojo.getComentarios(), userOptional.get());
+			addressRepository.save(address);
+			redirectAttributes.addFlashAttribute("address_saved", "Domicilio agregado");
+			redirectAttributes.addFlashAttribute("page", SECOND_STEP_WIZARD);
+		}
+		return String.format("redirect:/wizard/%d", userOptional.get().getId());
 	}
 	public String md5(String password) {
 		try {
