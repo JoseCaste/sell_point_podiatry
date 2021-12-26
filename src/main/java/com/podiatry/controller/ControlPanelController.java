@@ -14,6 +14,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.mercadopago.MercadoPago;
 import com.mercadopago.resources.Preference;
 import com.mercadopago.resources.datastructures.preference.BackUrls;
 import com.mercadopago.resources.datastructures.preference.Item;
@@ -57,12 +59,43 @@ public class ControlPanelController {
 		session.invalidate();
 		return "index";
 	}
+	
+	@GetMapping("/pago")
+	public String pago(Model model) {
+		Preference preference = new Preference();
+		preference.setBackUrls(new BackUrls().setFailure("htttp://localhost:8080/failure")
+				.setPending("http://localhost:8080/pending")
+				.setSuccess("http://localhost:8080/success"));
+		try {
+			MercadoPago.SDK.configure("TEST-2907327363456926-122016-ff4c3e130dafd4857504c8decced8a77-1043363108");
+
+
+			Item item = new Item();
+			item.setId("1234")
+			    .setTitle("Blue shirt")
+			    .setQuantity(1)
+			    .setCategoryId("MXN")
+			    .setUnitPrice((float) 20);
+			
+			Payer payer = new Payer();
+			payer.setEmail("jotaguzman08@gmail.com");
+			
+			preference.setPayer(payer);
+			preference.appendItem(item);
+			preference.save();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return String.format("redirect:%s", preference.getSandboxInitPoint());
+	}
+	
 	@GetMapping("/buyItem/{id}")
 	public String buyItem(@PathVariable("id")Long id) {
 		Optional<User> user= this.userRepository.findById(id);
 		if(user.isPresent()) {
 			Preference preference = new Preference();
-			preference.setBackUrls(new BackUrls().setFailure("htttp://localhost:8080/failure")
+			preference.setBackUrls(new BackUrls().setFailure("http://localhost:8080/failure")
 					.setPending("http://localhost:8080/pending")
 					.setSuccess(String.format("%s/%d", "http://localhost:8080/success",id)));
 			Payer payer = new Payer();
@@ -85,10 +118,9 @@ public class ControlPanelController {
 				e.printStackTrace();
 				return "controlPanel";
 			}
-			
-			//return "HI";
 		}else return "controlPanel";
 	}
+	
 	@GetMapping("/success/{id}")
 	public String success(@PathVariable("id")Long id, @Validated SuccessCriteria successCriteria, Model model, HttpSession httpSession, RedirectAttributes redirectAttributes) {
 		if(successCriteria.getStatus().equals(APPROVED)) {
@@ -97,7 +129,6 @@ public class ControlPanelController {
 				Purchase purchase = new Purchase();
 				ArrayList<Product> products = new ArrayList<Product>();
 				List<CarSales> list_car_sales=user.get().getCarSales();
-				//list_car_sales.forEach(item-> item.setStatus(false));
 				this.carSalesRepository.deleteAll(list_car_sales);
 				purchase.setUser(user.get());
 				purchase.setDate_(Timestamp.valueOf(LocalDateTime.now()));
@@ -118,8 +149,20 @@ public class ControlPanelController {
 		}else return "controlPanel";
 		
 	}
+
+	@GetMapping("/success-payment")
+	public String successPayment(Model model, RedirectAttributes redirectAttributes) {
+		return "success_payment";
+	}
+	
+	@GetMapping("/controlPanel")
+	public String controlPanel(Model model, RedirectAttributes redirectAttributes) {
+		model.addAttribute("payment_success",true);
+		loadResources(model);
+		return "controlPanel";
+	}
+	
 	private void loadPurchaseResources(Purchase purchase, SuccessCriteria successCriteria) {
-		// TODO Auto-generated method stub
 		purchase.setCollection_id(successCriteria.getCollection_id());
 		purchase.setCollection_status(successCriteria.getCollection_status());
 		purchase.setExternal_reference(successCriteria.getExternal_reference());
@@ -129,17 +172,6 @@ public class ControlPanelController {
 		purchase.setPreference_id(successCriteria.getPreference_id());
 		purchase.setSite_id(successCriteria.getSite_id());
 		purchase.setStatus(successCriteria.getStatus());
-	}
-
-	@GetMapping("/success-payment")
-	public String successPayment(Model model, RedirectAttributes redirectAttributes) {
-		return "success_payment";
-	}
-	@GetMapping("/controlPanel")
-	public String controlPanel(Model model, RedirectAttributes redirectAttributes) {
-		model.addAttribute("payment_success",true);
-		loadResources(model);
-		return "controlPanel";
 	}
 	
 	private void loadResources(Model model) {
