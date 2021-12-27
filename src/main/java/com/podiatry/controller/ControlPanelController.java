@@ -55,9 +55,12 @@ public class ControlPanelController {
 	
 	@Autowired
 	private AddressRepository addressRepository;
+
 	private final Integer SECOND_STEP_WIZARD=1;
+
 	
 	private final String APPROVED="approved";
+	
 	@GetMapping("/session")
 	public String currentSession(Model model,HttpSession httpSession) {
 		
@@ -70,7 +73,7 @@ public class ControlPanelController {
 		session.invalidate();
 		return "index";
 	}
-	
+
 	@GetMapping("/pago")
 	public String pago(Model model) {
 		Preference preference = new Preference();
@@ -100,7 +103,7 @@ public class ControlPanelController {
 		}
 		return String.format("redirect:%s", preference.getSandboxInitPoint());
 	}
-	
+
 	@PostMapping("/buyItem")
 	public String buyItem(Model model, @ModelAttribute AddressData address) {
 		Optional<User> user= this.userRepository.findById(address.getIdUser());
@@ -133,6 +136,7 @@ public class ControlPanelController {
 			//return "HI";
 		}else return "controlPanel";
 	}
+
 	@GetMapping("/wizard/{id}")
 	public String formWizard(Model model, @PathVariable("id") Long idUser, @ModelAttribute("address") AddressData addressPojo) {
 		Optional<User> userOptional=this.userRepository.findById(idUser);
@@ -156,7 +160,6 @@ public class ControlPanelController {
 		}
 		return String.format("redirect:/wizard/%d", userOptional.get().getId());
 	}
-	
 	@GetMapping("/success/{id}/{idAddress}")
 	public String success(@PathVariable("id")Long id, @PathVariable("idAddress") Long idAddress,@Validated SuccessCriteria successCriteria, Model model, HttpSession httpSession, RedirectAttributes redirectAttributes) {
 		if(successCriteria.getStatus().equals(APPROVED)) {
