@@ -64,62 +64,6 @@ public class IndexController {
 		
 	}
 
-	@GetMapping("/pago")
-	public String pago(Model model) {
-		Preference preference = new Preference();
-		preference.setBackUrls(new BackUrls().setFailure("htttp://localhost:8080/failure")
-				.setPending("http://localhost:8080/pending")
-				.setSuccess("http://localhost:8080/success"));
-		try {
-			MercadoPago.SDK.configure("TEST-2907327363456926-122016-ff4c3e130dafd4857504c8decced8a77-1043363108");
-
-
-			Item item = new Item();
-			item.setId("1234")
-			    .setTitle("Blue shirt")
-			    .setQuantity(1)
-			    .setCategoryId("MXN")
-			    .setUnitPrice((float) 20);
-			
-			Payer payer = new Payer();
-			payer.setEmail("jotaguzman08@gmail.com");
-			
-			preference.setPayer(payer);
-			preference.appendItem(item);
-			preference.save();
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}finally {
-			System.out.println("----------> "+preference.getSandboxInitPoint());
-		}
-		return String.format("redirect:%s", preference.getSandboxInitPoint());
-	}
-	
-	@GetMapping("/wizard/{id}")
-	public String formWizard(Model model, @PathVariable("id") Long idUser, @ModelAttribute("address") AddressData addressPojo) {
-		Optional<User> userOptional=this.userRepository.findById(idUser);
-		if(userOptional.isPresent()) {
-			User user= userOptional.get();
-			addressPojo.setIdUser(user.getId());
-			model.addAttribute("idUser", user.getId());
-			model.addAttribute("userName",String.format("%s %s" , user.getName(),user.getLastName()));
-			model.addAttribute("address_founded",user.getAddresses());
-		}
-		return "form-wizard";
-	}
-	@PostMapping("/address/save/")
-	public String saveAddress(Model model, @ModelAttribute("address") AddressData addressPojo, RedirectAttributes redirectAttributes) {
-		Optional<User> userOptional=this.userRepository.findById(addressPojo.getIdUser());
-		if(userOptional.isPresent()) {
-			Address address = new Address(addressPojo.getClaveAddress(), addressPojo.getCiudad(), addressPojo.getCp(), addressPojo.getNumero(), addressPojo.getColonia(), addressPojo.getEstado(), addressPojo.getComentarios(), userOptional.get());
-			addressRepository.save(address);
-			redirectAttributes.addFlashAttribute("address_saved", "Domicilio agregado");
-			redirectAttributes.addFlashAttribute("page", SECOND_STEP_WIZARD);
-		}
-		return String.format("redirect:/wizard/%d", userOptional.get().getId());
-	}
-
 	public String md5(String password) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");

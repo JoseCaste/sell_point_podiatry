@@ -203,6 +203,10 @@ public class ControlPanelController {
 		loadResources(model,session);
 		return "controlPanel";
 	}
+	@GetMapping("/citas")
+	public String registerDate(Model model, HttpSession session) {
+		return "register_date";
+	}
 	
 	private void loadPurchaseResources(Purchase purchase, SuccessCriteria successCriteria) {
 		purchase.setCollection_id(successCriteria.getCollection_id());
