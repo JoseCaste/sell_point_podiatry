@@ -1,11 +1,13 @@
 package com.podiatry.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,17 +18,25 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Entity
 @Data
 @AllArgsConstructor
-public class Purchase {
+public class Purchase implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id_purchase;
+	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="fk_iduser",nullable = false, updatable = false)
 	private User user;
@@ -34,6 +44,7 @@ public class Purchase {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date_;
 	
+	@JsonIgnore
 	@JoinTable(
 			name="contains_",
 			joinColumns = @JoinColumn(name="fk_idpurchase",nullable = false),
@@ -44,6 +55,10 @@ public class Purchase {
 	
 	@Column(name="total")
 	private Double total;
+	
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "fk_id_address")
+	private Address address;
 	
 	private Integer collection_id;
 	private String collection_status;

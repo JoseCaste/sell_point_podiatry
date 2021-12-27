@@ -213,8 +213,21 @@
 		if(clear_car_sales == 'true'){
 			localStorage.removeItem("products");
 		}
-
-		showCarSales();
+		$.ajax({
+				method: "GET",
+				url: "[[@{/carSales/}]]" + id_user
+			}).done(function (data,textStatus, jqXHR) {
+				if(jqXHR == 204){
+					localStorage.removeItem("products")
+				}else{
+					var json_car_sales_user=data; 
+				json_car_sales_user=mapJsonToLocalStorageJson(json_car_sales_user);
+				localStorage.setItem("products",JSON.stringify(json_car_sales_user));
+				showCarSales();
+				}
+			}).fail(function(error){
+				swal("Lo sentimos","Hubo un error al intentar recuperar su información","error");
+			});
 		function showCarSales() {
 			var mount = 0;
 			var subtotal = document.querySelector("#subtotal")
@@ -224,11 +237,24 @@
 			var tbody = document.querySelector("#car_sales");
 			tbody.innerHTML = "";
 			for (var key in products) {
-				tbody.innerHTML += "<tr><td><figure class='media'><div class='img-wrap'><img src='" + products[key].src + "' class='img-thumbnail img-xs'></div><figcaption class='media-body'><h6 class='title text-truncate'>" + products[key].name + "</h6></figcaption></figure></td><td class='text-center'><div class='m-btn-group m-btn-group--pill btn-group mr-2' role='group' aria-label='...'> <button type='button' class='m-btn btn btn-default'> <img id='less' src='img/less.png' height='15' onclick='less(this)'/></i></button><button type='button' class='m-btn btn btn-default' >" + products[key].total + "</button><button type='button' class='m-btn btn btn-default'><img id='plus' src='img/plus.png' height='15' onclick='plus(this)'/></i></button></div></td><td><div class='price-wrap'><var class='price'>$" + products[key].price + "</var></div> </td><td class='text-right'><div href='#' class='btn btn-outline-danger'> <img src='img/trash.png' height='15' onclick='deleteItem(this)' /></div></td> </tr>"
+				tbody.innerHTML += "<tr><td><figure class='media'><div class='img-wrap'><img src='" + products[key].img + "' class='img-thumbnail img-xs'></div><figcaption class='media-body'><h6 class='title text-truncate'>" + products[key].name + "</h6></figcaption></figure></td><td class='text-center'><div class='m-btn-group m-btn-group--pill btn-group mr-2' role='group' aria-label='...'> <button type='button' class='m-btn btn btn-default'> <img id='less' src='img/less.png' height='15' onclick='less(this)'/></i></button><button type='button' class='m-btn btn btn-default' >" + products[key].total + "</button><button type='button' class='m-btn btn btn-default'><img id='plus' src='img/plus.png' height='15' onclick='plus(this)'/></i></button></div></td><td><div class='price-wrap'><var class='price'>$" + products[key].price + "</var></div> </td><td class='text-right'><div href='#' class='btn btn-outline-danger'> <img src='img/trash.png' height='15' onclick='deleteItem(this)' /></div></td> </tr>"
 				mount += parseFloat(products[key].price) * products[key].total
 			}
 			subtotal.textContent = "$" + mount
 			total.textContent = "$" + mount
+		}
+		function mapJsonToLocalStorageJson(json_car_sales_user){
+			let newJson=[];
+			json_car_sales_user.forEach(item=>{
+				newJson.push({
+					"id":item.product.id_product,
+					"name":item.product.name,
+					"price":item.product.price,
+					"img":"data:image/jpeg;base64,"+item.product.img,
+					"total":item.total
+				});
+			});
+			return newJson;
 		}
 		function deleteItem(e) {
 
@@ -349,7 +375,7 @@
 					var src = document.querySelector("#img" + e.id).src
 					var price = document.querySelector("#price" + e.id).textContent
 					//var tbody = document.querySelector("#car_sales");
-					var actual_product = {id: e.id, name: name, price: price, total: 1, src: src}
+					var actual_product = {id: e.id, name: name, price: price, total: 1, img: src}
 					$.ajax({
 						method: "GET",
 						url: "[[@{/add/}]]" + e.id + "/" + id_user
@@ -365,7 +391,7 @@
 				var name = document.querySelector("#name" + e.id).textContent
 				var src = document.querySelector("#img" + e.id).src
 				var price = document.querySelector("#price" + e.id).textContent
-				var actual_product = {id: e.id, name: name, price: price, total: 1, src: src}
+				var actual_product = {id: e.id, name: name, price: price, total: 1, img: src}
 				json.push(actual_product)
 				$.ajax({
 					method: "GET",
@@ -396,7 +422,8 @@
 					})
 					.then((willDelete) => {
 					  if (willDelete) {
-					   window.location.href="[[@{/buyItem/}]]"+id_user 
+					   //window.location.href="[[@{/buyItem/}]]"+id_user
+					   window.location.href="[[@{/wizard/}]]"+id_user 
 					  }
 				});
 			}else swal("Lo sentimos", "Debes tener productos para poder pagar!", "error");
