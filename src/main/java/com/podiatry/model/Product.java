@@ -1,7 +1,9 @@
 package com.podiatry.model;
 
+import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,7 +22,11 @@ import lombok.ToString;
 @Data
 @ToString
 @AllArgsConstructor
-public class Product {
+public class Product implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id_product;
@@ -29,18 +35,16 @@ public class Product {
 	private double price;
 	private String img;
 	
+	@JsonIgnore
 	@Transient
 	@ManyToMany(mappedBy = "products")
 	private List<Purchase> purchases;
 	
+	@JsonIgnore
 	@Transient
 	@OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
 	private List<Product> products;
-	/*@Transient
-	@ManyToMany(mappedBy = "detalle_products")
-	private List<CarSales> car_sales;*/
-	/*@OneToMany(mappedBy = "product")
-	List<CarSalesDetail> carSalesDetails;*/
+	
 	public Product() {
 		
 	}

@@ -5,9 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
-
 import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import com.mercadopago.MercadoPago;
 import com.mercadopago.resources.Preference;
 import com.mercadopago.resources.datastructures.preference.BackUrls;
@@ -66,6 +63,7 @@ public class IndexController {
 		}
 		
 	}
+
 	@GetMapping("/pago")
 	public String pago(Model model) {
 		Preference preference = new Preference();
@@ -121,6 +119,7 @@ public class IndexController {
 		}
 		return String.format("redirect:/wizard/%d", userOptional.get().getId());
 	}
+
 	public String md5(String password) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");

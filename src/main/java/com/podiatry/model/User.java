@@ -1,7 +1,8 @@
 package com.podiatry.model;
 
 
-
+import java.io.Serializable;
+import java.util.List;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
@@ -20,7 +23,11 @@ import lombok.ToString;
 @Data
 @ToString
 @AllArgsConstructor
-public class User {
+public class User implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -30,12 +37,14 @@ public class User {
 	private String userName;
 	private String password;
 	
+	@JsonIgnore
 	@Transient
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private List<Purchase> purchase;
 	
 	/*@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
 	private CarSales carSales;*/
+	@JsonIgnore
 	@OneToMany(mappedBy = "user")
 	private List<CarSales> carSales;
 	

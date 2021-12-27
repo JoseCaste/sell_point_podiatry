@@ -16,12 +16,16 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.mercadopago.MercadoPago;
 import com.mercadopago.resources.Preference;
 import com.mercadopago.resources.datastructures.preference.BackUrls;
 import com.mercadopago.resources.datastructures.preference.Item;
 import com.mercadopago.resources.datastructures.preference.Payer;
 import com.podiatry.model.Address;
 import com.podiatry.model.CarSales;
+import com.podiatry.model.CarSalesUser;
 import com.podiatry.model.Product;
 import com.podiatry.model.Purchase;
 import com.podiatry.model.SuccessCriteria;
@@ -51,13 +55,16 @@ public class ControlPanelController {
 	
 	@Autowired
 	private AddressRepository addressRepository;
+
+	private final Integer SECOND_STEP_WIZARD=1;
+
 	
 	private final String APPROVED="approved";
 	
 	@GetMapping("/session")
-	public String currentSession(Model model) {
+	public String currentSession(Model model,HttpSession httpSession) {
 		
-		loadResources(model);
+		loadResources(model,httpSession);
 		return "controlPanel";
 	}
 
@@ -66,7 +73,37 @@ public class ControlPanelController {
 		session.invalidate();
 		return "index";
 	}
-	//@GetMapping("/buyItem/{id}")
+
+	@GetMapping("/pago")
+	public String pago(Model model) {
+		Preference preference = new Preference();
+		preference.setBackUrls(new BackUrls().setFailure("htttp://localhost:8080/failure")
+				.setPending("http://localhost:8080/pending")
+				.setSuccess("http://localhost:8080/success"));
+		try {
+			MercadoPago.SDK.configure("TEST-2907327363456926-122016-ff4c3e130dafd4857504c8decced8a77-1043363108");
+
+
+			Item item = new Item();
+			item.setId("1234")
+			    .setTitle("Blue shirt")
+			    .setQuantity(1)
+			    .setCategoryId("MXN")
+			    .setUnitPrice((float) 20);
+			
+			Payer payer = new Payer();
+			payer.setEmail("jotaguzman08@gmail.com");
+			
+			preference.setPayer(payer);
+			preference.appendItem(item);
+			preference.save();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return String.format("redirect:%s", preference.getSandboxInitPoint());
+	}
+
 	@PostMapping("/buyItem")
 	public String buyItem(Model model, @ModelAttribute AddressData address) {
 		Optional<User> user= this.userRepository.findById(address.getIdUser());
@@ -99,6 +136,30 @@ public class ControlPanelController {
 			//return "HI";
 		}else return "controlPanel";
 	}
+
+	@GetMapping("/wizard/{id}")
+	public String formWizard(Model model, @PathVariable("id") Long idUser, @ModelAttribute("address") AddressData addressPojo) {
+		Optional<User> userOptional=this.userRepository.findById(idUser);
+		if(userOptional.isPresent()) {
+			User user= userOptional.get();
+			addressPojo.setIdUser(user.getId());
+			model.addAttribute("idUser", user.getId());
+			model.addAttribute("userName",String.format("%s %s" , user.getName(),user.getLastName()));
+			model.addAttribute("address_founded",user.getAddresses());
+		}
+		return "form-wizard";
+	}
+	@PostMapping("/address/save/")
+	public String saveAddress(Model model, @ModelAttribute("address") AddressData addressPojo, RedirectAttributes redirectAttributes) {
+		Optional<User> userOptional=this.userRepository.findById(addressPojo.getIdUser());
+		if(userOptional.isPresent()) {
+			Address address = new Address(addressPojo.getClaveAddress(), addressPojo.getCiudad(), addressPojo.getCp(), addressPojo.getNumero(), addressPojo.getColonia(), addressPojo.getEstado(), addressPojo.getComentarios(), userOptional.get());
+			addressRepository.save(address);
+			redirectAttributes.addFlashAttribute("address_saved", "Domicilio agregado");
+			redirectAttributes.addFlashAttribute("page", SECOND_STEP_WIZARD);
+		}
+		return String.format("redirect:/wizard/%d", userOptional.get().getId());
+	}
 	@GetMapping("/success/{id}/{idAddress}")
 	public String success(@PathVariable("id")Long id, @PathVariable("idAddress") Long idAddress,@Validated SuccessCriteria successCriteria, Model model, HttpSession httpSession, RedirectAttributes redirectAttributes) {
 		if(successCriteria.getStatus().equals(APPROVED)) {
@@ -130,8 +191,20 @@ public class ControlPanelController {
 		}else return "controlPanel";
 		
 	}
+
+	@GetMapping("/success-payment")
+	public String successPayment(Model model, RedirectAttributes redirectAttributes) {
+		return "success_payment";
+	}
+	
+	@GetMapping("/controlPanel")
+	public String controlPanel(Model model, RedirectAttributes redirectAttributes, HttpSession session) {
+		model.addAttribute("payment_success",true);
+		loadResources(model,session);
+		return "controlPanel";
+	}
+	
 	private void loadPurchaseResources(Purchase purchase, SuccessCriteria successCriteria) {
-		// TODO Auto-generated method stub
 		purchase.setCollection_id(successCriteria.getCollection_id());
 		purchase.setCollection_status(successCriteria.getCollection_status());
 		purchase.setExternal_reference(successCriteria.getExternal_reference());
@@ -142,21 +215,26 @@ public class ControlPanelController {
 		purchase.setSite_id(successCriteria.getSite_id());
 		purchase.setStatus(successCriteria.getStatus());
 	}
-
-	@GetMapping("/success-payment")
-	public String successPayment(Model model, RedirectAttributes redirectAttributes) {
-		return "success_payment";
-	}
-	@GetMapping("/controlPanel")
-	public String controlPanel(Model model, RedirectAttributes redirectAttributes) {
-		model.addAttribute("payment_success",true);
-		loadResources(model);
-		return "controlPanel";
-	}
 	
-	private void loadResources(Model model) {
+	private void loadResources(Model model, HttpSession httpSession) {
 		// TODO Auto-generated method stub
 		List<Product> all_products= repository.allProducts();
-		model.addAttribute("allProducts", all_products);
+		//Optional<CarSales> car_sales_userOptinal= this.carSalesRepository.findByUser(this.userRepository.getById((long)httpSession.getAttribute("id")));
+		try {
+			User user= this.userRepository.findById((long)httpSession.getAttribute("id")).get();
+			ObjectMapper car_sales_json= new ObjectMapper();
+			car_sales_json.registerModule(new Hibernate5Module());
+			List<CarSalesUser> carlesCarSalesUsers= new ArrayList<>();
+					user.getCarSales().stream().forEach(item->{
+					Product product= this.productRepository.findById(item.getProduct().getId_product()).get();
+					carlesCarSalesUsers.add(new CarSalesUser(product, item.getTotal()));
+			});
+			String json_object=car_sales_json.writeValueAsString(carlesCarSalesUsers);	
+			model.addAttribute("car_sales", json_object);
+			model.addAttribute("allProducts", all_products);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

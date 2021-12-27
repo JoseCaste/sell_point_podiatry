@@ -1,5 +1,6 @@
 package com.podiatry.model;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,26 +10,34 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
 @Entity(name = "car_sales")
-public class CarSales {
+public class CarSales implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id_car_sales")
-	private Integer id;
+	private Long id;
 	
 	@Column(name="status")
 	private Boolean status;
 	
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY,optional = false)
 	@JoinColumn(name="fk_id_usuario")
 	private User user;
 	
+	@JsonIgnore	
 	@ManyToOne(fetch = FetchType.LAZY,optional = false)
 	@JoinColumn(name="fk_id_producto")
 	private Product product;
