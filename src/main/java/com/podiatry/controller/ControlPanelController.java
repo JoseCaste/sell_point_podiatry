@@ -206,6 +206,11 @@ public class ControlPanelController {
 		return "success_payment";
 	}
 	
+	@GetMapping("/success-payment-cita")
+	public String successPaymentCita(Model model, RedirectAttributes redirectAttributes) {
+		return "success_payment_cita";	
+	}
+	
 	@GetMapping("/controlPanel")
 	public String controlPanel(Model model, RedirectAttributes redirectAttributes, HttpSession session) {
 		model.addAttribute("payment_success",true);
@@ -252,8 +257,7 @@ public class ControlPanelController {
 			this.citasRepository.save(cita_pending);
 			redirectAttributes.addFlashAttribute("id_payment",successCriteria.getPayment_id());
 			redirectAttributes.addFlashAttribute("payment_type",successCriteria.getPayment_type().equals("credit_card")? "Tarjeta de crédito":"Tarjeta de débito");
-			redirectAttributes.addFlashAttribute("url", "/register_date");
-			return "redirect:/success-payment";
+			return "redirect:/success-payment-cita";
 		}
 		redirectAttributes.addFlashAttribute("status",false);
 		redirectAttributes.addFlashAttribute("error_paid", "Hubo un error al recuperar la información");
