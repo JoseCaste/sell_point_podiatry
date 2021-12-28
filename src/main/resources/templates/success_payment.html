@@ -57,7 +57,7 @@
         Tipo de pago: <strong><span th:text="${payment_type}"></span></strong> 
         <p>Hemos recibido la confirmación de tu pago;
         <br/> 
-        <a th:href="@{/controlPanel}" class="btn btn-success"> Presiona aquí para ir a la página de compra</a> </p>
+        <a th:href="@{/{url} (url=${url})" class="btn btn-success"> Presiona aquí para regresar a la página inicial</a> </p>
       </div>
       <script th:src="@{/js/jquery-2.0.0.min.js}" type="text/javascript"></script>
 	  <script th:src="@{/js/bootstrap.bundle.min.js}" type="text/javascript"></script>
