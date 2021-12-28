@@ -48,6 +48,18 @@ public class Citas implements Serializable {
 	
 	@Column(name="comments")
 	private String comments;
+	
+	private Integer collection_id;
+	private String collection_status;
+	private Integer payment_id;
+	private String status_payment;
+	private String external_reference;
+	private String payment_type;
+	private String merchant_order_id;
+	private String preference_id;
+	private String site_id;
+	private String processing_mode;
+	private String merchant_id;
 
 	public Citas() {}
 	

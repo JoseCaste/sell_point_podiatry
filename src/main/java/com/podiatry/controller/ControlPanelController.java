@@ -253,6 +253,7 @@ public class ControlPanelController {
 		Optional<Citas> cita_pending_= this.citasRepository.findById(idCita);
 		if(cita_pending_.isPresent()) {
 			Citas cita_pending= cita_pending_.get();
+			loadCitaResources(cita_pending, successCriteria);
 			cita_pending.setStatus(APPROVED);
 			this.citasRepository.save(cita_pending);
 			redirectAttributes.addFlashAttribute("id_payment",successCriteria.getPayment_id());
@@ -289,7 +290,17 @@ public class ControlPanelController {
 		purchase.setSite_id(successCriteria.getSite_id());
 		purchase.setStatus(successCriteria.getStatus());
 	}
-	
+	private void loadCitaResources(Citas cita, SuccessCriteria successCriteria) {
+		cita.setCollection_id(successCriteria.getCollection_id());
+		cita.setCollection_status(successCriteria.getCollection_status());
+		cita.setExternal_reference(successCriteria.getExternal_reference());
+		cita.setMerchant_id(successCriteria.getMerchant_id());
+		cita.setMerchant_order_id(successCriteria.getMerchant_order_id());
+		cita.setPayment_type(successCriteria.getPayment_type());
+		cita.setPreference_id(successCriteria.getPreference_id());
+		cita.setSite_id(successCriteria.getSite_id());
+		cita.setStatus_payment(successCriteria.getStatus());
+	}
 	private void loadResources(Model model, HttpSession httpSession) {
 		// TODO Auto-generated method stub
 		List<Product> all_products= repository.allProducts();
