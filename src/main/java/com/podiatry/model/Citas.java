@@ -32,7 +32,7 @@ public class Citas implements Serializable {
 	
 	private String place;
 	
-	private Boolean paid;
+	private Boolean atendido;
 	
 	@Column(name="full_name")
 	private String pacientName;

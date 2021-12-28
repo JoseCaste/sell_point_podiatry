@@ -275,7 +275,7 @@ public class ControlPanelController {
 		cita.setComments(dateData.getComments());
 		cita.setPlace(dateData.getPlace());
 		cita.setEmail(dateData.getEmail());
-		cita.setPaid(false);
+		cita.setAtendido(false);
 		cita.setStatus(PENDING);
 	}
 
