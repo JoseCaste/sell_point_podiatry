@@ -1,11 +1,12 @@
 package com.podiatry.controller;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +27,8 @@ import com.mercadopago.resources.datastructures.preference.Payer;
 import com.podiatry.model.Address;
 import com.podiatry.model.CarSales;
 import com.podiatry.model.CarSalesUser;
+import com.podiatry.model.Citas;
+import com.podiatry.model.DateData;
 import com.podiatry.model.Product;
 import com.podiatry.model.Purchase;
 import com.podiatry.model.SuccessCriteria;
@@ -33,6 +36,7 @@ import com.podiatry.model.User;
 import com.podiatry.pojo.AddressData;
 import com.podiatry.repository.AddressRepository;
 import com.podiatry.repository.CarSalesRepository;
+import com.podiatry.repository.CitasRepository;
 import com.podiatry.repository.ProductRepository;
 import com.podiatry.repository.PurchaseRepository;
 import com.podiatry.repository.UserRepository;
@@ -55,11 +59,16 @@ public class ControlPanelController {
 	
 	@Autowired
 	private AddressRepository addressRepository;
+	
+	@Autowired
+	private CitasRepository citasRepository;
 
 	private final Integer SECOND_STEP_WIZARD=1;
 
 	
 	private final String APPROVED="approved";
+	
+	private final String PENDING="pending";
 	
 	@GetMapping("/session")
 	public String currentSession(Model model,HttpSession httpSession) {
@@ -185,7 +194,7 @@ public class ControlPanelController {
 				purchaseRepository.save(purchase);
 				redirectAttributes.addFlashAttribute("id_payment",successCriteria.getPayment_id());
 				redirectAttributes.addFlashAttribute("payment_type",successCriteria.getPayment_type().equals("credit_card")? "Tarjeta de crédito":"Tarjeta de débito");
-				
+				redirectAttributes.addFlashAttribute("url", "/controlPanel");
 				return "redirect:/success-payment";
 			}else return "controlPanel";
 		}else return "controlPanel";
@@ -197,13 +206,79 @@ public class ControlPanelController {
 		return "success_payment";
 	}
 	
+	@GetMapping("/success-payment-cita")
+	public String successPaymentCita(Model model, RedirectAttributes redirectAttributes) {
+		return "success_payment_cita";	
+	}
+	
 	@GetMapping("/controlPanel")
 	public String controlPanel(Model model, RedirectAttributes redirectAttributes, HttpSession session) {
 		model.addAttribute("payment_success",true);
 		loadResources(model,session);
 		return "controlPanel";
 	}
+	@GetMapping("/citas")
+	public String registerDate(Model model, @ModelAttribute("date_data") DateData dateData) {
+		return "register_date";
+	}
+	@PostMapping("/citas")
+	public String registerDate(Model model, HttpSession session,@ModelAttribute("date_data") DateData dateData) {
+		//mapStringToLocalDate(dateData);
+		Citas cita= new Citas();
+		mapDateDateToCita(dateData,cita);
+		this.citasRepository.save(cita);
+		Preference preference = new Preference();
+		preference.setBackUrls(new BackUrls().setFailure("htttp://localhost:8080/cita/faiulure")
+				.setPending("http://localhost:8080/pending")
+				.setSuccess(String.format("%s/%d", "http://localhost:8080/cita/paid",cita.getId())));
+		Payer payer = new Payer();
+		payer.setEmail(dateData.getEmail());
+		try {
+				Item item= new Item();
+				item.setId(dateData.getPlace()+dateData.getFullName()+cita.getId());
+				item.setTitle(dateData.getPlace());
+				item.setQuantity(1);
+				item.setUnitPrice((float)150);
+				preference.appendItem(item);
+			preference.save();
+			return String.format("redirect:%s", preference.getSandboxInitPoint());
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return "controlPanel";
+		}
+	}
+	@GetMapping("/cita/paid/{id}")
+	private String citaPaid(@PathVariable("id")Long idCita, @Validated SuccessCriteria successCriteria, RedirectAttributes redirectAttributes) {
+		Optional<Citas> cita_pending_= this.citasRepository.findById(idCita);
+		if(cita_pending_.isPresent()) {
+			Citas cita_pending= cita_pending_.get();
+			loadCitaResources(cita_pending, successCriteria);
+			cita_pending.setStatus(APPROVED);
+			this.citasRepository.save(cita_pending);
+			redirectAttributes.addFlashAttribute("id_payment",successCriteria.getPayment_id());
+			redirectAttributes.addFlashAttribute("payment_type",successCriteria.getPayment_type().equals("credit_card")? "Tarjeta de crédito":"Tarjeta de débito");
+			return "redirect:/success-payment-cita";
+		}
+		redirectAttributes.addFlashAttribute("status",false);
+		redirectAttributes.addFlashAttribute("error_paid", "Hubo un error al recuperar la información");
+		return "redirect:/register_date";
+	}
 	
+	
+	private void mapDateDateToCita(DateData dateData, Citas cita) {
+		cita.setPacientName(dateData.getFullName());
+		cita.setLastName(dateData.getLastName());
+		cita.setPhone(dateData.getPhone());
+		cita.setDate(LocalDate.parse(dateData.getDate()));
+		cita.setTime(LocalTime.parse(dateData.getTime()));
+		cita.setComments(dateData.getComments());
+		cita.setPlace(dateData.getPlace());
+		cita.setEmail(dateData.getEmail());
+		cita.setAtendido(false);
+		cita.setStatus(PENDING);
+	}
+
 	private void loadPurchaseResources(Purchase purchase, SuccessCriteria successCriteria) {
 		purchase.setCollection_id(successCriteria.getCollection_id());
 		purchase.setCollection_status(successCriteria.getCollection_status());
@@ -215,7 +290,17 @@ public class ControlPanelController {
 		purchase.setSite_id(successCriteria.getSite_id());
 		purchase.setStatus(successCriteria.getStatus());
 	}
-	
+	private void loadCitaResources(Citas cita, SuccessCriteria successCriteria) {
+		cita.setCollection_id(successCriteria.getCollection_id());
+		cita.setCollection_status(successCriteria.getCollection_status());
+		cita.setExternal_reference(successCriteria.getExternal_reference());
+		cita.setMerchant_id(successCriteria.getMerchant_id());
+		cita.setMerchant_order_id(successCriteria.getMerchant_order_id());
+		cita.setPayment_type(successCriteria.getPayment_type());
+		cita.setPreference_id(successCriteria.getPreference_id());
+		cita.setSite_id(successCriteria.getSite_id());
+		cita.setStatus_payment(successCriteria.getStatus());
+	}
 	private void loadResources(Model model, HttpSession httpSession) {
 		// TODO Auto-generated method stub
 		List<Product> all_products= repository.allProducts();
