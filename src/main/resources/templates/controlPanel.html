@@ -69,6 +69,7 @@
 							</a>
 						</div>
 						<!-- widget .// -->
+						
 						<div class="widget-header dropdown">
 							<a href="#" class="ml-3 icontext" data-toggle="dropdown" data-offset="20,10"> <img
 									th:if="${!session.isEmpty()}" th:src="@{/img/user_profile.png}" class="avatar"
@@ -80,7 +81,7 @@
 									<button type="submit" class="dropdown-item"><i class="fa fa-sign-out-alt"></i>
 										Cerrar sesión</button>
 								</form>
-
+								<a th:href="@{/citas}" class="dropdown-item">Agendar cita</a>
 							</div>
 							<!--  dropdown-menu .// -->
 						</div>
@@ -202,7 +203,7 @@
 		<!-- container //  -->
 	</section>
 	<script th:src="@{/js/jquery-2.0.0.min.js}" type="text/javascript"></script>
-	<script th:src="@{/js/bootstrap.bundle.min.js}" type="text/javascript"></script>
+	<script th:src="@{/js/bootstrap_.bundle.min.js}" type="text/javascript"></script>
 	<script th:src="@{js/OverlayScrollbars.js}" type="text/javascript"></script>
 	<!--script th:src="@{/js/}" type="text/javascript"></script-->
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
