@@ -28,7 +28,6 @@ public class DateData implements Serializable {
 	@NotNull
 	private String phone;
 	
-	@NotNull
 	private String address;
 	
 	private String comments;
