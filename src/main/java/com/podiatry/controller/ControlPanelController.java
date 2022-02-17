@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -63,6 +64,9 @@ public class ControlPanelController {
 	@Autowired
 	private CitasRepository citasRepository;
 
+	@Autowired
+	private Environment environment;
+	
 	private final Integer SECOND_STEP_WIZARD=1;
 
 	
@@ -120,7 +124,7 @@ public class ControlPanelController {
 			Preference preference = new Preference();
 			preference.setBackUrls(new BackUrls().setFailure("htttp://localhost:8080/failure")
 					.setPending("http://localhost:8080/pending")
-					.setSuccess(String.format("%s/%d/%d", "http://localhost:8080/success",user.get().getId(),address.getDomicilioId())));
+					.setSuccess(String.format("http://localhost:%s/success/%d/%d", environment.getProperty("local.server.port"),user.get().getId(),address.getDomicilioId())));
 			Payer payer = new Payer();
 			payer.setEmail("jotaguzman08@gmail.com");
 			
@@ -230,7 +234,7 @@ public class ControlPanelController {
 		Preference preference = new Preference();
 		preference.setBackUrls(new BackUrls().setFailure("htttp://localhost:8080/cita/faiulure")
 				.setPending("http://localhost:8080/pending")
-				.setSuccess(String.format("%s/%d", "http://localhost:8080/cita/paid",cita.getId())));
+				.setSuccess(String.format("http://localhost:%s/cita/paid/%d", environment.getProperty("local.server.port"),cita.getId())));
 		Payer payer = new Payer();
 		payer.setEmail(dateData.getEmail());
 		try {
