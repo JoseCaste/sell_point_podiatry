@@ -7,10 +7,8 @@ import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
-public class DateData implements Serializable {
+public class DateCalendarData implements Serializable {
     private Long id;
     private String title;
     private String start;
-    private String end;
-
 }
