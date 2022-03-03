@@ -1,4 +1,5 @@
 $('#calendar').fullCalendar({
+    locale: "es",
     header: {
     left: 'prev,next today',
     center: 'title',
