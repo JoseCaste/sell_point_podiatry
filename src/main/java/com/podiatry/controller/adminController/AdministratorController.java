@@ -37,7 +37,8 @@ public class AdministratorController {
     private String mapObjectToFullCalendar(List<Citas> citas) throws JsonProcessingException {
         List<DateCalendarData> parseDate = citas.stream().map(cita->{
             LocalDateTime date= LocalDateTime.of(cita.getDate(),cita.getTime());
-            return new DateCalendarData(cita.getId(),String.format("%s %s - %s",cita.getPacientName(),cita.getLastName(),cita.getPlace()),date.toString());
+            LocalDateTime dateEnd= LocalDateTime.of(cita.getDate(),cita.getTime().plusHours(1));
+            return new DateCalendarData(cita.getId(),String.format("%s %s - %s",cita.getPacientName(),cita.getLastName(),cita.getPlace()),date.toString(), dateEnd.toString());
         }).collect(Collectors.toCollection(ArrayList::new));
 
         ObjectMapper mapper = new ObjectMapper();
