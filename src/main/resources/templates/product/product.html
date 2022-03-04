@@ -1,10 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Productos</title>
+    <link  rel="shortcut icon" type="image/x-icon" th:href="@{/img/foot_header.png}">
+    <link th:href="@{/css/bootstrap.min.css}" rel='stylesheet'>
+    <link th:href="@{/css/form.style.css}" rel="stylesheet" type="text/css" />
+    <style>
+		body {
+			background-color: #dee9ff;
+		}
+	</style>
 </head>
 <body>
-$END$
+<div class="registration-form">
+    <form method="POST" th:object="${product}" th:action="@{/product}" enctype="multipart/form-data">
+        <div class="form-group">
+            <div th:if="${status != null}" class="alert" th:classappend="${status} ? alert-success : alert-danger"
+                 th:text="${messageProduct}"></div>
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control item" id="name" placeholder="Nombre del producto" th:field="*{name}"
+                   required />
+        </div>
+        <div class="form-group" id="totaldiv">
+            <input type="number" class="form-control item" id="total" placeholder="Total" th:field="*{total}" required>
+        </div>
+        <div class="form-group" id="priceDive">
+            <input type="number" class="form-control item" id="price" placeholder="Precio" th:field="*{price}" required>
+        </div>
+        <div class="form-group">
+            <input type="file" th:field="*{img}" id="img" required>
+        </div>
+        <div class="form-group">
+            <img src="" id="imgPreview" style="width: 50%; margin: 0px auto">
+        </div>
+        <div class="form-group" style="margin: 0px auto">
+            <button type="submit" class="btn btn-block create-account">Guardar</button>
+            <a th:href="@{/controlPanel}"style="background-color:red" class="btn btn-block create-account">Cancelar</a>
+        </div>
+    </form>
+    <div class="social-media">
+
+    </div>
+</div>
+<script>
+    let img= document.querySelector("#img");
+    let imgPreview= document.querySelector("#imgPreview");
+    img.addEventListener('change',()=>{
+        previewImage();
+    });
+
+    function previewImage(){
+        const file= img.files[0];
+        if(file){
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(file);
+            fileReader.addEventListener("load", function () {
+              imgPreview.style.display = "block";
+              imgPreview.src= `${this.result}`;
+            });
+        }
+    }
+</script>
 </body>
 </html>
