@@ -28,7 +28,7 @@ public class UserServices implements UserDetailsService {
 
     public User save(User user) {
         user.setPassword(encoder.encode(user.getPassword()));
-        user.setRoles(Arrays.asList(new Role("ROLE_USER")));
+        user.setRoles(Arrays.asList(new Role("USER")));
         return userRepository.save(user);
     }
 
