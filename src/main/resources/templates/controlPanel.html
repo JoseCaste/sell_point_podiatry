@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="es">
 
 <head>
 	<meta charset="utf-8">
@@ -73,15 +74,18 @@
 						<div class="widget-header dropdown">
 							<a href="#" class="ml-3 icontext" data-toggle="dropdown" data-offset="20,10"> <img
 									th:if="${!session.isEmpty()}" th:src="@{/img/user_profile.png}" class="avatar"
-									alt="" th:text="  ${session.user}">
+									alt="" th:text="${user_name}">
 								<img th:if="${session.isEmpty()}" th:src="@{/img/user.png}" class="avatar" alt="">
 							</a> <span style="color: blue;"> </span>
 							<div class="dropdown-menu dropdown-menu-right">
-								<form th:action="@{/logout}" method="GET">
+								<a th:href="@{/citas}" class="dropdown-item">Agendar cita</a>
+								<div sec:authorize="hasAuthority('ADMIN')">
+									<a th:href="@{/dates}" class="dropdown-item">Ver citas</a>
+								</div>
+								<form th:action="@{/close}" method="GET">
 									<button type="submit" class="dropdown-item"><i class="fa fa-sign-out-alt"></i>
 										Cerrar sesión</button>
 								</form>
-								<a th:href="@{/citas}" class="dropdown-item">Agendar cita</a>
 							</div>
 							<!--  dropdown-menu .// -->
 						</div>
@@ -209,7 +213,7 @@
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	<script type="text/javascript">
 		//global variable
-		var id_user = "[[${session.id}]]";
+		var id_user = "[[${user_id}]]";
 		var clear_car_sales="[[${payment_success}]]";
 		if(clear_car_sales == 'true'){
 			localStorage.removeItem("products");

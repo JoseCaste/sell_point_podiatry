@@ -8,15 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpSession;
+
+import com.podiatry.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
@@ -66,7 +69,9 @@ public class ControlPanelController {
 
 	@Autowired
 	private Environment environment;
-	
+
+	@Autowired
+	private UserServices userServices;
 	private final Integer SECOND_STEP_WIZARD=1;
 
 	
@@ -268,6 +273,11 @@ public class ControlPanelController {
 		redirectAttributes.addFlashAttribute("error_paid", "Hubo un error al recuperar la información");
 		return "redirect:/register_date";
 	}
+	@PostMapping("/user")
+	public ResponseEntity<User> saveUser(@RequestBody User user){
+		final User user_ = this.userServices.save(user);
+		return new ResponseEntity(user_,HttpStatus.CREATED);
+	}
 	
 	
 	private void mapDateDateToCita(DateData dateData, Citas cita) {
@@ -308,17 +318,24 @@ public class ControlPanelController {
 	private void loadResources(Model model, HttpSession httpSession) {
 		// TODO Auto-generated method stub
 		List<Product> all_products= repository.allProducts();
-		//Optional<CarSales> car_sales_userOptinal= this.carSalesRepository.findByUser(this.userRepository.getById((long)httpSession.getAttribute("id")));
 		try {
-			User user= this.userRepository.findById((long)httpSession.getAttribute("id")).get();
+			final UserDetails userLogged = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+			User user= this.userRepository.findByUserName(userLogged.getUsername()).get();
+
 			ObjectMapper car_sales_json= new ObjectMapper();
+
 			car_sales_json.registerModule(new Hibernate5Module());
+
 			List<CarSalesUser> carlesCarSalesUsers= new ArrayList<>();
 					user.getCarSales().stream().forEach(item->{
 					Product product= this.productRepository.findById(item.getProduct().getId_product()).get();
 					carlesCarSalesUsers.add(new CarSalesUser(product, item.getTotal()));
 			});
-			String json_object=car_sales_json.writeValueAsString(carlesCarSalesUsers);	
+
+			String json_object=car_sales_json.writeValueAsString(carlesCarSalesUsers);
+			model.addAttribute("user_id", user.getId());
+			model.addAttribute("user_name",user.getName());
 			model.addAttribute("car_sales", json_object);
 			model.addAttribute("allProducts", all_products);
 		} catch (Exception e) {
