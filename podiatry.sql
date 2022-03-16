@@ -15,3 +15,13 @@ create table product (id_product mediumint auto_increment,name text,total int, p
 
 create table contains_(fk_idpurchase mediumint,fk_idproduct mediumint, foreign key(fk_idpurchase)references purchase(id_purchase),
 foreign key(fk_idproduct)references product(id_product));
+
+INSERT INTO role (id_role,name) VALUES (1,'ROLE_USER');
+INSERT INTO role (id_role,name) VALUES (2,'ROLE_ADMIN');
+insert into podiatry.user_roles(user_id,role_id) values (2,2);
+
+insert into user (id,name, lastname, user_name,password) value (2,'Juan', 'Castellanos','juan','$2a$10$QOMPqHGrGarDAAnFfNPJLenTfaYtiNNRH8izae7oAnBVA6Bp3zKeW');
+insert into podiatry.user_roles(user_id,role_id) values (1,1);
+#insert into user_role
+ALTER TABLE podiatry.product modify img mediumblob;
+DESCRIBE podiatry.product;
