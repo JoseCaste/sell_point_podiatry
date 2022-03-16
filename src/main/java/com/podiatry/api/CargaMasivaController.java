@@ -23,15 +23,13 @@ public class CargaMasivaController {
 	
 	@GetMapping("/uploadImage")
 	public ResponseEntity<String> saveProduct() {
-		String [] names = new File("c:\\img").list();
+		String [] names = new File("/home/jose/Pictures/podiatry/").list();
 		List<Product> products= new ArrayList<>();
 		for (String file_ : names) {
 			try {
-				byte[] imageBytes = Files.readAllBytes(new File("c:\\img\\"+file_).toPath());
-	            Base64.Encoder encoder = Base64.getEncoder();
-	            String encoded = encoder.encodeToString(imageBytes);
+				byte[] imageBytes = Files.readAllBytes(new File("/home/jose/Pictures/podiatry/"+file_).toPath());
 	            Random random= new Random();
-				products.add(new Product(file_.substring(0,file_.indexOf(".")),random.nextInt(200-10)+10, random.nextInt(200-10)+10,encoded));
+				products.add(new Product(file_.substring(0,file_.indexOf(".")),random.nextInt(200-10)+10, random.nextInt(200-10)+10,imageBytes));
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();

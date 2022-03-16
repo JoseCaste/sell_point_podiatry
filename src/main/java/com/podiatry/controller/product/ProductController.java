@@ -57,6 +57,6 @@ public class ProductController {
     }
 
     private Product mapPojoToEntity(ProductMetaData productMetaData) throws IOException {
-        return new Product(productMetaData.getName(), productMetaData.getTotal(), productMetaData.getPrice(), Base64.getEncoder().encodeToString(productMetaData.getImg().getBytes()));
+        return new Product(productMetaData.getName(), productMetaData.getTotal(), productMetaData.getPrice(),productMetaData.getImg().getBytes());
     }
 }

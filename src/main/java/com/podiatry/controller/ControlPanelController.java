@@ -5,10 +5,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpSession;
 
+import com.podiatry.pojo.ProductData;
 import com.podiatry.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -232,7 +235,6 @@ public class ControlPanelController {
 	}
 	@PostMapping("/citas")
 	public String registerDate(Model model, HttpSession session,@ModelAttribute("date_data") DateData dateData) {
-		//mapStringToLocalDate(dateData);
 		Citas cita= new Citas();
 		mapDateDateToCita(dateData,cita);
 		this.citasRepository.save(cita);
@@ -316,8 +318,7 @@ public class ControlPanelController {
 		cita.setStatus_payment(successCriteria.getStatus());
 	}
 	private void loadResources(Model model, HttpSession httpSession) {
-		// TODO Auto-generated method stub
-		List<Product> all_products= repository.allProducts();
+		List<ProductData> all_products = loadProducts();
 		try {
 			final UserDetails userLogged = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -342,5 +343,10 @@ public class ControlPanelController {
 			e.printStackTrace();
 		}
 		
+	}
+
+	private List<ProductData> loadProducts() {
+		final List<Product> products =  this.productRepository.findAll();
+		return products.stream().map(product -> new ProductData(product.getId_product(), product.getName(), Base64.getEncoder().encodeToString(product.getImg()), product.getTotal(), product.getPrice())).collect(Collectors.toList());
 	}
 }
