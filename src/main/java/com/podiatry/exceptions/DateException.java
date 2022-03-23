@@ -1,4 +1,12 @@
 package com.podiatry.exceptions;
 
-public class DateException {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+public class DateException extends Exception{
+
+    private String message;
+
 }
