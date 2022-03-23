@@ -2,17 +2,12 @@ package com.podiatry.model;
 
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
@@ -21,7 +16,6 @@ import lombok.ToString;
 
 @Entity
 @Data
-@ToString
 @AllArgsConstructor
 public class User implements Serializable{
 	/**
@@ -41,15 +35,22 @@ public class User implements Serializable{
 	@Transient
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private List<Purchase> purchase;
-	
-	/*@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-	private CarSales carSales;*/
-	@JsonIgnore
+
 	@OneToMany(mappedBy = "user")
 	private List<CarSales> carSales;
-	
+
+	@JsonBackReference
 	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	private List<Address> addresses;
+
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinTable(
+			name = "user_roles",
+			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+			inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id_role")
+	)
+	private Collection<Role> roles;
+
 	public User() {
 	}
 }
