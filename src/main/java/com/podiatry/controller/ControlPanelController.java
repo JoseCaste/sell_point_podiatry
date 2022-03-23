@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpSession;
 
+import com.podiatry.exceptions.DateException;
 import com.podiatry.pojo.ProductData;
 import com.podiatry.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -231,34 +232,49 @@ public class ControlPanelController {
 	}
 	@GetMapping("/citas")
 	public String registerDate(Model model, @ModelAttribute("date_data") DateData dateData) {
+
+		model.addAttribute("minDate",LocalDate.now());
 		return "register_date";
 	}
 	@PostMapping("/citas")
 	public String registerDate(Model model, HttpSession session,@ModelAttribute("date_data") DateData dateData) {
-		Citas cita= new Citas();
-		mapDateDateToCita(dateData,cita);
-		this.citasRepository.save(cita);
-		Preference preference = new Preference();
-		preference.setBackUrls(new BackUrls().setFailure("htttp://localhost:8080/cita/faiulure")
-				.setPending("http://localhost:8080/pending")
-				.setSuccess(String.format("http://localhost:%s/cita/paid/%d", environment.getProperty("local.server.port"),cita.getId())));
-		Payer payer = new Payer();
-		payer.setEmail(dateData.getEmail());
 		try {
+			validateDate(dateData);
+			Citas cita= new Citas();
+			mapDateDateToCita(dateData,cita);
+			this.citasRepository.save(cita);
+			Preference preference = new Preference();
+			preference.setBackUrls(new BackUrls().setFailure("htttp://localhost:8080/cita/faiulure")
+					.setPending("http://localhost:8080/pending")
+					.setSuccess(String.format("http://localhost:%s/cita/paid/%d", environment.getProperty("local.server.port"),cita.getId())));
+			Payer payer = new Payer();
+			payer.setEmail(dateData.getEmail());
+			try {
 				Item item= new Item();
 				item.setId(dateData.getPlace()+dateData.getFullName()+cita.getId());
 				item.setTitle(dateData.getPlace());
 				item.setQuantity(1);
 				item.setUnitPrice((float)150);
 				preference.appendItem(item);
-			preference.save();
-			return String.format("redirect:%s", preference.getSandboxInitPoint());
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
+				preference.save();
+				return String.format("redirect:%s", preference.getSandboxInitPoint());
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+				return "controlPanel";
+			}
+		}catch (DateException message){
+			message.printStackTrace();
+			model.addAttribute("error", message.getMessage());
 			return "controlPanel";
 		}
 	}
+
+	private void validateDate(DateData dateData) throws DateException {
+		final LocalDate date= LocalDate.parse(dateData.getDate());
+		if (date.isBefore(LocalDate.now())) throw new DateException("La fecha no puede ser anterior a la fecha actual");
+	}
+
 	@GetMapping("/cita/paid/{id}")
 	private String citaPaid(@PathVariable("id")Long idCita, @Validated SuccessCriteria successCriteria, RedirectAttributes redirectAttributes) {
 		Optional<Citas> cita_pending_= this.citasRepository.findById(idCita);
