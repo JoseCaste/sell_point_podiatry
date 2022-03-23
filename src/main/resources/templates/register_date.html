@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
 	<meta charset="utf-8">
@@ -23,6 +23,7 @@
 		<div th:if="${status}" class="alert" th:classappend="${status} ? alert-success : alert-danger"
 			th:text="${error_paid}"></div>
 		<form method="POST" th:object="${date_data}" th:action="@{/citas}">
+			<div th:if="${error != '' || error != null}" th:text="${error}"></div>
 			<div class="form-group">
 				<input type="text" class="form-control item" id="username" placeholder="Nombres" th:field="*{fullName}"
 					required />
@@ -55,7 +56,7 @@
 				<input type="text" class="form-control item" th:field="*{phone}" placeholder="Número de contacto" required />
 			</div>
 			<div class="form-group">
-					<input type="date" id="date" name="date" class="form-control item" onchange="getHoursDate(this.value)" th:filed="*{date}" required>
+					<input type="date" id="date" name="date" class="form-control item" onchange="getHoursDate(this.value)" th:filed="*{date}" th:attr="min=${minDate}"required>
 				</div>
 				<div class="form-group">
 				<select class="form-control item" onchange="console.log(this.value)" required id="hours_available" th:field="*{time}">
