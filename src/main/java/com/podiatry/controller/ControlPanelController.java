@@ -5,12 +5,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Base64;
+//import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpSession;
-
+import org.apache.commons.codec.binary.Base64;
 import com.podiatry.exceptions.DateException;
 import com.podiatry.pojo.ProductData;
 import com.podiatry.services.UserServices;
@@ -363,6 +363,6 @@ public class ControlPanelController {
 
 	private List<ProductData> loadProducts() {
 		final List<Product> products =  this.productRepository.findAll();
-		return products.stream().map(product -> new ProductData(product.getId_product(), product.getName(), Base64.getEncoder().encodeToString(product.getImg()), product.getTotal(), product.getPrice())).collect(Collectors.toList());
+		return products.stream().map(product -> new ProductData(product.getId_product(), product.getName(), Base64.encodeBase64String(product.getImg()), product.getTotal(), product.getPrice())).collect(Collectors.toList());
 	}
 }

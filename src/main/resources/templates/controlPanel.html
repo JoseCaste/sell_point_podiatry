@@ -73,8 +73,11 @@
 						
 						<div class="widget-header dropdown">
 							<a href="#" class="ml-3 icontext" data-toggle="dropdown" data-offset="20,10"> <img
-									th:if="${!session.isEmpty()}" th:src="@{/img/user_profile.png}" class="avatar"
+									th:if="${!session.isEmpty()}" sec:authorize="hasAuthority('ADMIN')" th:src="@{/img/root.png}" class="avatar"
 									alt="" th:text="${user_name}">
+								<img
+										th:if="${!session.isEmpty()}" sec:authorize="hasAuthority('USER')" th:src="@{/img/common.png}" class="avatar"
+										alt="" th:text="${user_name}">
 								<img th:if="${session.isEmpty()}" th:src="@{/img/user.png}" class="avatar" alt="">
 							</a> <span style="color: blue;"> </span>
 							<div class="dropdown-menu dropdown-menu-right">
