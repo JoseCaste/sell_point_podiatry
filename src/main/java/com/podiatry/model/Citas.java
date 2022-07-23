@@ -31,6 +31,8 @@ public class Citas implements Serializable {
 	private String status;
 	
 	private String place;
+
+	private String address;
 	
 	private Boolean atendido;
 	

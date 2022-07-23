@@ -306,6 +306,7 @@ public class ControlPanelController {
 		cita.setTime(LocalTime.parse(dateData.getTime()));
 		cita.setComments(dateData.getComments());
 		cita.setPlace(dateData.getPlace());
+		cita.setAddress(dateData.getAddress());
 		cita.setEmail(dateData.getEmail());
 		cita.setAtendido(false);
 		cita.setStatus(PENDING);

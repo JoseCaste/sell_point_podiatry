@@ -200,3 +200,15 @@ a,a:hover{
 .btn-error{
 	color: #ef5f5f;
 }
+
+.my-custom-scrollbar {
+    position: relative;
+    height: 400px;
+    overflow: auto;
+    margin: 0px auto;
+    width: 80%;
+    margin-top: 3%;
+}
+.table-wrapper-scroll-y {
+    display: block;
+}

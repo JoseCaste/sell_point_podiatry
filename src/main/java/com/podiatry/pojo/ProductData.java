@@ -14,4 +14,10 @@ public class ProductData implements Serializable {
     private String img;
     private Integer total;
     private Double price;
+
+    public ProductData(Long id_product, String name, String img) {
+        this.id_product = id_product;
+        this.name = name;
+        this.img = img;
+    }
 }
