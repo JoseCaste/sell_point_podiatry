@@ -90,7 +90,8 @@ public class AdministratorController {
             final String address = cita.getAddress() != null ?
                                    cita.getPlace().concat(" | ".concat(cita.getAddress())) : cita.getPlace();
 
-            return new DateCalendarData(cita.getId(),String.format("%s %s - %s",cita.getPacientName(),cita.getLastName(),address),date.toString(), dateEnd.toString());
+            return new DateCalendarData(cita.getId(),cita.getPayment_id(), String.format("Orden de pago: %s | %s %s - %s",cita.getPayment_id() != null ? cita.getPayment_id() : "",
+                                        cita.getPacientName(),cita.getLastName(),address),date.toString(), dateEnd.toString());
         }).collect(Collectors.toCollection(ArrayList::new));
 
         ObjectMapper mapper = new ObjectMapper();

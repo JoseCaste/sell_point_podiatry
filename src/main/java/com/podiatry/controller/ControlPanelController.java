@@ -322,6 +322,7 @@ public class ControlPanelController {
 		purchase.setPreference_id(successCriteria.getPreference_id());
 		purchase.setSite_id(successCriteria.getSite_id());
 		purchase.setStatus(successCriteria.getStatus());
+		purchase.setPayment_id(successCriteria.getPayment_id());
 	}
 	private void loadCitaResources(Citas cita, SuccessCriteria successCriteria) {
 		cita.setCollection_id(successCriteria.getCollection_id());
@@ -333,6 +334,7 @@ public class ControlPanelController {
 		cita.setPreference_id(successCriteria.getPreference_id());
 		cita.setSite_id(successCriteria.getSite_id());
 		cita.setStatus_payment(successCriteria.getStatus());
+		cita.setPayment_id(successCriteria.getPayment_id());
 	}
 	private void loadResources(Model model, HttpSession httpSession) {
 		List<ProductData> all_products = loadProducts();

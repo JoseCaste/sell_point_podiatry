@@ -9,6 +9,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class DateCalendarData implements Serializable {
     private Long id;
+    private Integer paymentId;
     private String title;
     private String start;
     private String end;

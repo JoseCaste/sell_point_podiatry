@@ -18,6 +18,6 @@ $('#calendar').fullCalendar({
   			$(".fc-prev-button").prop('disabled', false);
   		}
   },
-    editable: true,
+    editable: false,
     eventSources: [jsonDate]
 });
