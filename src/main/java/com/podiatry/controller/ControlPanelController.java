@@ -5,11 +5,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-//import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.servlet.http.HttpSession;
+
+import com.podiatry.model.*;
+import com.podiatry.repository.*;
 import org.apache.commons.codec.binary.Base64;
 import com.podiatry.exceptions.DateException;
 import com.podiatry.pojo.ProductData;
@@ -18,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -32,22 +37,7 @@ import com.mercadopago.resources.Preference;
 import com.mercadopago.resources.datastructures.preference.BackUrls;
 import com.mercadopago.resources.datastructures.preference.Item;
 import com.mercadopago.resources.datastructures.preference.Payer;
-import com.podiatry.model.Address;
-import com.podiatry.model.CarSales;
-import com.podiatry.model.CarSalesUser;
-import com.podiatry.model.Citas;
-import com.podiatry.model.DateData;
-import com.podiatry.model.Product;
-import com.podiatry.model.Purchase;
-import com.podiatry.model.SuccessCriteria;
-import com.podiatry.model.User;
 import com.podiatry.pojo.AddressData;
-import com.podiatry.repository.AddressRepository;
-import com.podiatry.repository.CarSalesRepository;
-import com.podiatry.repository.CitasRepository;
-import com.podiatry.repository.ProductRepository;
-import com.podiatry.repository.PurchaseRepository;
-import com.podiatry.repository.UserRepository;
 
 @Controller
 public class ControlPanelController {
@@ -76,6 +66,13 @@ public class ControlPanelController {
 
 	@Autowired
 	private UserServices userServices;
+
+	@Autowired
+	private EntityManager entityManager;
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
 	private final Integer SECOND_STEP_WIZARD=1;
 
 	
@@ -154,8 +151,7 @@ public class ControlPanelController {
 				e.printStackTrace();
 				return "controlPanel";
 			}
-			
-			//return "HI";
+
 		}else return "controlPanel";
 	}
 
@@ -189,7 +185,7 @@ public class ControlPanelController {
 			Optional<Address> addresOptional= this.addressRepository.findById(idAddress);
 			if(user.isPresent() && addresOptional.isPresent()) {
 				Purchase purchase = new Purchase();
-				ArrayList<Product> products = new ArrayList<Product>();
+				ArrayList<Product> products = new ArrayList<>();
 				List<CarSales> list_car_sales=user.get().getCarSales();
 				//list_car_sales.forEach(item-> item.setStatus(false));
 				this.carSalesRepository.deleteAll(list_car_sales);
@@ -197,14 +193,21 @@ public class ControlPanelController {
 				purchase.setAddress(addresOptional.get());
 				purchase.setDate_(Timestamp.valueOf(LocalDateTime.now()));
 				user.get().getCarSales().stream().filter(item->item.getStatus()).forEach(item->{
-				products.add(item.getProduct());
-				this.productRepository.updateProduct(item.getTotal(), item.getProduct().getId_product());
+					products.add(item.getProduct());
+					this.productRepository.updateProduct(item.getTotal(), item.getProduct().getId_product());
+
 				});
 				purchase.setProducts(products);
 				Double totalPrice= user.get().getCarSales().stream().map(item->item.getTotal()*item.getProduct().getPrice()).reduce(0.0, Double::sum);
 				purchase.setTotal(totalPrice);
 				loadPurchaseResources(purchase,successCriteria);
 				purchaseRepository.save(purchase);
+
+				user.get().getCarSales().stream().filter(item->item.getStatus()).forEach(item->{
+					final String query = String.format("UPDATE contains_ SET amount = %d WHERE fk_idpurchase = %d AND fk_idproduct = %d ",item.getTotal(),purchase.getId_purchase(),item.getProduct().getId_product());
+					jdbcTemplate.execute(query);
+				});
+
 				redirectAttributes.addFlashAttribute("id_payment",successCriteria.getPayment_id());
 				redirectAttributes.addFlashAttribute("payment_type",successCriteria.getPayment_type().equals("credit_card")? "Tarjeta de crédito":"Tarjeta de débito");
 				redirectAttributes.addFlashAttribute("url", "/controlPanel");
