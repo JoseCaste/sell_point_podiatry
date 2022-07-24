@@ -13,6 +13,7 @@ import java.util.Date;
 public class PurchaseData implements Serializable {
 
     private Long id;
+    private Integer paymentId;
     private String buyersName;
     private String status;
     private Date localDateTime;

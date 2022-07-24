@@ -16,6 +16,9 @@
 </head>
 <body>
 <div class="table-wrapper-scroll-y my-custom-scrollbar">
+    <div style="width: 25%">
+        <a th:href="@{/controlPanel/}" class = "btn btn-info">Ir al panel de control</a>
+    </div>
     <div class="alert alert-danger" th:if="${error != null}" th:text="${error}"></div>
     <table class="table align-middle mb-0 bg-white" th:if="${error == null}">
         <thead class="bg-light">
@@ -31,7 +34,10 @@
         <th:block th:each ="purchase : ${purchases}">
             <tr>
                 <td>
-                    <div th:text="${purchase.id}"></div>
+                    <div>
+                        <p class="fw-bold mb-1" th:text="${purchase.id}"></p>
+                        <p class="text-muted mb-0" th:text ="${purchase.paymentId} != null ? 'Orden de pago: ' + ${purchase.paymentId}  : 'Orden de pago: Sin registro'"></p>
+                    </div>
                 </td>
                 <td>
                     <p class="fw-normal mb-1" th:text="${purchase.buyersName}"></p>
