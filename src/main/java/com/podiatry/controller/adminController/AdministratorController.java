@@ -3,6 +3,7 @@ package com.podiatry.controller.adminController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.podiatry.model.Address;
 import com.podiatry.model.Citas;
 import com.podiatry.model.Purchase;
 import com.podiatry.pojo.DateCalendarData;
@@ -78,8 +79,12 @@ public class AdministratorController {
 
     private List<PurchaseData> mapEntityToDTO(List<Purchase> purchaseList) {
         return purchaseList.stream().map(item ->
-                new PurchaseData(item.getId_purchase(), item.getPayment_id(),item.getUser().getUserName().concat(item.getUser().getLastName()), item.getStatus(), item.getDate_(), item.getTotal())
+                new PurchaseData(item.getId_purchase(), item.getPayment_id(),item.getUser().getUserName().concat(item.getUser().getLastName()), item.getStatus(), item.getDate_(), item.getTotal(), makeAddressString(item.getAddress()))
         ).collect(Collectors.toList());
+    }
+
+    private String makeAddressString(Address address) {
+        return address.getColonia().concat(", ").concat(address.getCity()).concat(", ").concat(address.getState());
     }
 
     private List<ProductData> mapProductToDTO(Purchase purchase) {

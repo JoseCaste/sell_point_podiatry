@@ -27,6 +27,7 @@
             <th>Comprador</th>
             <th>Status</th>
             <th>Total</th>
+            <th>Dirección</th>
             <th>Detalle</th>
         </tr>
         </thead>
@@ -47,6 +48,7 @@
                           th:text="${purchase.status == 'approved' ? 'APROBADO' : 'RECHAZADO'}"></span>
                 </td>
                 <td th:text="${purchase.totalPaid}"></td>
+                <td th:text="${purchase.address}"></td>
                 <td>
                     <button type="button" class="btn btn-link btn-sm btn-rounded" th:attr="onclick=|verDetalle(${purchase.id})|">
                         Ver

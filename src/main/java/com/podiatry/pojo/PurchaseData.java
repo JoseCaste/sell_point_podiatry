@@ -18,5 +18,6 @@ public class PurchaseData implements Serializable {
     private String status;
     private Date localDateTime;
     private Double totalPaid;
+    private String address;
 
 }
